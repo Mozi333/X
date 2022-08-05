@@ -375,6 +375,9 @@ option = st.selectbox('Choose Player', (name))
 
 st.write('You chose:', option)
 
+fullname = st.text_input('Type name to print on radar', option)
+st.write('The full name of the player is:', fullname)
+
 
 def delanteros_radar(midfield_values, name, minutes, age, SizePlayer):
     
@@ -441,11 +444,11 @@ def delanteros_radar(midfield_values, name, minutes, age, SizePlayer):
         'Shots on target, %':'% Shots \non target',
         'Progressive runs per 90':'Progressive \nruns p90m',
         'Offensive duels won, %':'% Offensive \nduels won',
-        'Goal %':'Goal Ratio',
+        'Goal %':'Goal \nRatio',
         'nonpenalty_xG/90':'xG \np90m',
         'Accurate passes to final third, %':'% Accurate \npasses to \nfinal third',
         'Non-penalty goals per 90':'Goals \np90m',
-        'Shots per 90':'Shots p90m',
+        'Shots per 90':'Shots \np90m',
         'Accurate through passes, %':'% Accurate \nthrough \npasses',
         'PAdj Interceptions':'PAdj \nInterceptions',
         'Received passes per 90':'Received \npasses \np90m',
@@ -459,8 +462,8 @@ def delanteros_radar(midfield_values, name, minutes, age, SizePlayer):
             'xG \np90m',
             'Goals \np90m',
             'xA p90m',
-            'Goal Ratio',
-            'Shots p90m',
+            'Goal \nRatio',
+            'Shots \np90m',
             'Key \npasses \np90m',
             '% Offensive \nduels won',
             'Successful \nattacking \nactions \np90m',
@@ -545,7 +548,7 @@ def delanteros_radar(midfield_values, name, minutes, age, SizePlayer):
 
     # add name title
     
-    fig_text(0, 1.18, f'<{str(option.upper(),)}>', size = SizePlayer,  fontproperties=title_font.prop, color=Black, 
+    fig_text(0, 1.18, f'<{str(fullname.upper(),)}>', size = SizePlayer,  fontproperties=title_font.prop, color=Black, 
         highlight_textprops=[{'color':Black}])
 
     
