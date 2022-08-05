@@ -1,7 +1,6 @@
 adjustText==0.7.3
 altair==4.2.0
 highlight_text==0.2
-html5lib==1.1
 matplotlib==3.5.1
 mplsoccer==1.0.6
 numpy==1.21.5
@@ -13,4 +12,5 @@ requests==2.27.1
 scikit_learn==1.1.1
 scipy==1.7.3
 seaborn==0.11.2
-streamlit==0.84.2
+streamlit==1.11.1
+
