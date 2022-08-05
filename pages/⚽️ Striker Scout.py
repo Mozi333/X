@@ -210,11 +210,27 @@ striker_filter = ['Player', 'Team', 'Team within selected timeframe', 'Shots', '
                   'Deep completions per 90', 'Sum_xGp90_and_Goalsx90', 'Accurate forward passes, %', 'Accurate lateral passes, %', 
                   'Accurate short / medium passes, %', 'Accurate long passes, %', 'Accurate passes to final third, %', 
                   'Accurate through passes, %', 'Accurate progressive passes, %', 'xG per 90', 'nonpenalty_xG/90', 
-                  'Successful defensive actions per 90', 'xA per 90', 'Shots per 90', 'Assists', 'Non-penalty goals per 90']
+                  'Successful defensive actions per 90', 'xA per 90', 'Shots per 90', 'Assists', 'Non-penalty goals per 90', 'Head goals per 90']
 
-#save DF with new column
+#save DF with Striker filter columns
 
 striker_values = df[striker_filter].copy()
+
+#user picks which metrics to use for player rating
+
+'## CHOOSE METRICS TO CREATE PLAYER RATING TABLE 🥇'
+ratingfilter = st.multiselect('Metrics:', striker_values.columns.difference(['Player', 'Team', 'Team within selected timeframe', 'Shots', 'Non-penalty goals', 'Position', 
+                  'Age', 'Market value', 'Contract expires', 'Matches played', 'Minutes played', 'Birth country', 'Passport country', 'Foot', 
+                                                                             'Height', 'Weight', 'On loan', 'Assists']), default=['Successful attacking actions per 90', 
+                                                                                                                       'Shots on target, %', 'Goal %', 
+                                                                          'Offensive duels won, %', 'Progressive runs per 90', 'Accelerations per 90', 
+                                                                        'Sum_xAx90_and_Assistx90', 'Key passes per 90', 'Sum_xGp90_and_Goalsx90', 
+                                                                          'Deep completions per 90', 'Accurate passes to final third, %', 
+                                                                        'Accurate through passes, %', 'Successful defensive actions per 90', 'nonpenalty_xG/90', 
+                                                                          'Non-penalty goals per 90', 'Head goals per 90', 'Accurate forward passes, %', 
+                                                                        'Accurate lateral passes, %', 'Accurate long passes, %','Accurate progressive passes, %', 
+                                                                        'Accurate short / medium passes, %', 'Shots per 90', 'xA per 90', 'xG per 90'])
+
 
 #---------------------------------------------COMPARATIVA percentile RANKING INDEX-------------------------------------------
 
@@ -223,32 +239,25 @@ striker_values = df[striker_filter].copy()
 scaler = MinMaxScaler()
 
 
-
-striker_values[['Successful attacking actions per 90', 'Shots on target, %', 'Goal %', 'Offensive duels won, %', 'Progressive runs per 90', 'Accelerations per 90', 
-                'Sum_xAx90_and_Assistx90', 'Key passes per 90', 'Sum_xGp90_and_Goalsx90', 'Deep completions per 90', 'Accurate passes to final third, %', 
-                'Accurate through passes, %', 
-                'Successful defensive actions per 90', 'nonpenalty_xG/90', 'Non-penalty goals per 90']] = scaler.fit_transform(striker_values[['Successful attacking actions per 90', 
-                'Shots on target, %', 'Goal %', 'Offensive duels won, %', 'Progressive runs per 90', 'Accelerations per 90', 
-                'Sum_xAx90_and_Assistx90', 'Key passes per 90', 'Sum_xGp90_and_Goalsx90', 'Deep completions per 90', 'Accurate passes to final third, %', 
-                'Accurate through passes, %', 
-                'Successful defensive actions per 90', 'nonpenalty_xG/90', 'Non-penalty goals per 90']]).copy()
+#use indexfilter metrics to create player INDEX
+striker_values[ratingfilter] = scaler.fit_transform(striker_values[ratingfilter]).copy()
 
 
 percentile = (striker_values).copy()
 
 
 #create index column with average
-percentile['Index'] = striker_values[['Successful attacking actions per 90', 'Shots on target, %', 'Goal %', 'Offensive duels won, %', 'Progressive runs per 90', 'Accelerations per 90', 
-                'Sum_xAx90_and_Assistx90', 'Key passes per 90', 'Sum_xGp90_and_Goalsx90', 'Deep completions per 90', 'Accurate passes to final third, %', 
-                'Accurate through passes, %', 'Successful defensive actions per 90', 'nonpenalty_xG/90', 'Non-penalty goals per 90']].mean(axis=1)
+percentile['Index'] = striker_values[ratingfilter].mean(axis=1)
 
 percentile[['Index']] = scaler.fit_transform(percentile[['Index']]).copy()
 
 #reorder columns
 percentile = (percentile[['Player', 'Index', 'Team within selected timeframe', 'Age', 'Matches played', 'Minutes played', 'Passport country', 'Shots', 
-                        'Non-penalty goals', 'xG per 90', 'Non-penalty goals per 90', 'Shots per 90', 'Sum_xGp90_and_Goalsx90', 'Sum_xAx90_and_Assistx90',  'Shots on target, %', 
+                        'Non-penalty goals', 'xG per 90', 'Non-penalty goals per 90', 'Shots per 90', 'Sum_xGp90_and_Goalsx90', 'Sum_xAx90_and_Assistx90',  
+                          'Shots on target, %', 
                         'Goal %', 'Successful defensive actions per 90', 'Offensive duels won, %', 'Key passes per 90', 'Successful attacking actions per 90', 
-                        'Progressive runs per 90', 'Accelerations per 90', 'Deep completions per 90', 'Accurate passes to final third, %', 'Accurate through passes, %']]).copy()
+                        'Progressive runs per 90', 'Accelerations per 90', 'Deep completions per 90', 'Accurate passes to final third, %', 
+                          'Accurate through passes, %']]).copy()
 
 #Sort By
 
@@ -263,7 +272,8 @@ st.title('PERCENTILE RANKING')
 # print table
 st.write(percentile.style.applymap(styler, subset=['Index', 'Successful attacking actions per 90', 'Shots on target, %', 'Goal %', 'Offensive duels won, %',
                   'Progressive runs per 90', 'Accelerations per 90', 'Sum_xAx90_and_Assistx90', 'Deep completions per 90', 'Key passes per 90', 
-                  'Sum_xGp90_and_Goalsx90', 'Accurate passes to final third, %', 'Accurate through passes, %']).set_precision(2))
+                  'Sum_xGp90_and_Goalsx90', 'Accurate passes to final third, %', 'Accurate through passes, %', 'Successful defensive actions per 90', 
+                    'xG per 90', 'Non-penalty goals per 90', 'Shots per 90']).set_precision(2))
 
 #------------------------------------------------------------------Metricas de efectividad------------------------- 
 
@@ -676,5 +686,6 @@ my_bar = st.progress(0)
 for percent_complete in range(100):
      time.sleep(0.5)
      my_bar.progress(percent_complete + 1) 
+
 
 delanteros_radar(striker_values, option, minutes, age, SizePlayer = 45)
