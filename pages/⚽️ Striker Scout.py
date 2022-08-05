@@ -170,9 +170,11 @@ st.sidebar.title('Set Filters')
 st.sidebar.write('Filter players by age:')
 age = st.sidebar.slider('Age:', 0, 45, 40)
 
+
 #Minutes Played
 st.sidebar.write('Filter players by minutes played:')
 minutes = st.sidebar.slider('Minutes:', 0, 5000, 200)
+
 
 #xG
 st.sidebar.write('Filter players by xG per 90 minutes played:')
@@ -354,6 +356,10 @@ option = st.selectbox('Choose Player', (name))
 
 st.write('You chose:', option)
 
+fullname = st.text_input('Type name to print on radar', option)
+st.write('The full name of the player is:', option)
+
+
 
 def delanteros_radar(striker_values, name, minutes, age, SizePlayer):
     
@@ -420,11 +426,11 @@ def delanteros_radar(striker_values, name, minutes, age, SizePlayer):
         'Shots on target, %':'% Shots \non target',
         'Progressive runs per 90':'Progressive \nruns p90m',
         'Offensive duels won, %':'% Offensive \nduels won',
-        'Goal %':'Goal Ratio',
+        'Goal %':'Goal \nRatio',
         'nonpenalty_xG/90':'xG \np90m',
         'Accurate passes to final third, %':'% Accurate \npasses to \nfinal third',
         'Non-penalty goals per 90':'Goals \np90m',
-        'Shots per 90':'Shots p90m',
+        'Shots per 90':'Shots \np90m',
         'Accurate through passes, %':'% Accurate \nthrough \npasses'}, inplace=True)
 
 
@@ -435,8 +441,8 @@ def delanteros_radar(striker_values, name, minutes, age, SizePlayer):
             'xG \np90m',
             'Goals \np90m',
             'xA p90m',
-            'Goal Ratio',
-            'Shots p90m',
+            'Goal \nRatio',
+            'Shots \np90m',
             'Key \npasses \np90m',
             '% Offensive \nduels won',
             'Successful \nattacking \nactions \np90m',
@@ -518,7 +524,7 @@ def delanteros_radar(striker_values, name, minutes, age, SizePlayer):
 
     # add name title
     
-    fig_text(0, 1.18, f'<{str(option.upper(),)}>', size = SizePlayer,  fontproperties=title_font.prop, color=Black, 
+    fig_text(0, 1.18, f'<{str(fullname.upper(),)}>', size = SizePlayer,  fontproperties=title_font.prop, color=Black, 
         highlight_textprops=[{'color':Black}])
 
     
@@ -668,7 +674,7 @@ st.caption('Loading Radar...')
 my_bar = st.progress(0)
 
 for percent_complete in range(100):
-     time.sleep(0.1)
+     time.sleep(0.5)
      my_bar.progress(percent_complete + 1) 
 
 delanteros_radar(striker_values, option, minutes, age, SizePlayer = 45)
