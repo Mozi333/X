@@ -31,7 +31,7 @@ st.title('SCOUTING APP 🕵🏼‍♂️')
 
 def load_data():
     
-    data = (r'https://github.com/Mozi333/X/blob/main/sudamerica.xlsx?raw=true')
+    data = (r'https://github.com/Mozi333/X/blob/main/delanterosamericas1.xlsx?raw=true')
     file = requests.get(data)
     df = pd.read_excel(file.content)
     
