@@ -245,6 +245,7 @@ percentile = (striker_values).copy()
 #create index column with average
 percentile['Index'] = striker_values[ratingfilter].mean(axis=1)
 
+#turn index into 0-1 percentile
 percentile[['Index']] = scaler.fit_transform(percentile[['Index']]).copy()
 
 #reorder columns
@@ -313,6 +314,7 @@ st.write(df.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
 #-------------------- --------------------------------------------------Bar chart ---------------------------- 
 
 st.subheader('Strikers with the best xG and Non-Penalty Goal sum per 90 minutes played')
+
 
 #xG filter
 st.write('Filter players by xG per 90 minutes played:')
@@ -455,13 +457,13 @@ def delanteros_radar(striker_values, name, minutes, age, SizePlayer):
             'xA p90m',
             'Goal \nRatio',
             'Shots \np90m',
-            'Key \npasses \np90m',
             '% Offensive \nduels won',
             'Successful \nattacking \nactions \np90m',
             'Progressive \nruns p90m',
             'Deep \ncompletions \np90m',
             'Accelerations \np90m',
             '% Shots \non target',
+            'Key \npasses \np90m',
             '% Accurate \npasses to \nfinal third',
             '% Accurate \nthrough \npasses',
             'Successful \ndefensive \nactions \np90m']]
@@ -492,7 +494,7 @@ def delanteros_radar(striker_values, name, minutes, age, SizePlayer):
     #------Plot Radar
 
     # color for the slices and text
-    slice_colors = [Attack] * 12 + [Passes] * 2 + [Defense] * 1  # ataque - pases 
+    slice_colors = [Attack] * 11 + [Passes] * 3 + [Defense] * 1  # ataque - pases 
     text_colors = ["#F2F2F2"] * 15
 
     # instantiate PyPizza class
@@ -691,3 +693,4 @@ for percent_complete in range(100):
 
 
 delanteros_radar(striker_values, option, minutes, age, SizePlayer = 45)
+
