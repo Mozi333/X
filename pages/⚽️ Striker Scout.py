@@ -173,14 +173,10 @@ age = st.sidebar.slider('Age:', 0, 45, 40)
 
 #Minutes Played
 st.sidebar.write('Filter players by minutes played:')
-minutes = st.sidebar.slider('Minutes:', 0, 5000, 200)
+minutes = st.sidebar.slider('Minutes:', 0, 3000, 380)
 
 
-#xG
-st.sidebar.write('Filter players by xG per 90 minutes played:')
-xGp90 = st.sidebar.slider('xG:', 0.0, 1.5, 0.0)
-
-df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & ~(df['nonpenalty_xG/90'] < xGp90) ]
+df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK')]
 df.Player.unique()
 
 #-------ASSIGNT VALUES FOR LATER USE------------------
@@ -319,17 +315,24 @@ st.write(df.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
 st.subheader('Strikers with the best xG and Non-Penalty Goal sum per 90 minutes played')
 
 
+#xG filter
+st.write('Filter players by xG per 90 minutes played:')
+xGp90 = st.slider('xG:', 0.0, 1.5, 0.0)
+
+xgbar = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & ~(df['nonpenalty_xG/90'] < xGp90)]
+
+
 #Create column with  npxG per 90 plus Goles marcados (sin penales)
 
-df["sum_nonpenaltyxG_and_goalsP90"] = df['nonpenalty_xG/90'] + df['Non-penalty goals per 90'] 
-df = df.sort_values('sum_nonpenaltyxG_and_goalsP90').reset_index()
+xgbar["sum_nonpenaltyxG_and_goalsP90"] = xgbar['nonpenalty_xG/90'] + xgbar['Non-penalty goals per 90'] 
+xgbar = xgbar.sort_values('sum_nonpenaltyxG_and_goalsP90').reset_index()
 
 #sets name to index
-df.set_index('Player',drop=True,inplace=True)
+xgbar.set_index('Player',drop=True,inplace=True)
 #df = df.drop('level_0', 1)
-df = df.sort_values('sum_nonpenaltyxG_and_goalsP90')
+xgbar = xgbar.sort_values('sum_nonpenaltyxG_and_goalsP90')
 
-st.bar_chart(df[['nonpenalty_xG/90', 'Non-penalty goals per 90']])
+st.bar_chart(xgbar[['nonpenalty_xG/90', 'Non-penalty goals per 90']])
 
 #------------------------------------------------------------------------------------------RADAR---------------------------------------- TOT HEREEEEEEEEE
 
