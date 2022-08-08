@@ -31,7 +31,7 @@ st.title('MIDFIELDER SCOUT 🕵🏼‍♂️🧠')
 
 def load_data():
     
-    data = (r'https://github.com/Mozi333/X/blob/main/data/premierleague2022.xlsx?raw=true')
+    data = (r'https://github.com/Mozi333/X/blob/main/data/europe.xlsx?raw=true')
     file = requests.get(data)
     df = pd.read_excel(file.content)
     
@@ -173,14 +173,10 @@ age = st.sidebar.slider('Age:', 0, 45, 40)
 
 #Minutes Played
 st.sidebar.write('Filter players by minutes played:')
-minutes = st.sidebar.slider('Minutes:', 0, 5000, 200)
+minutes = st.sidebar.slider('Minutes:', 0, 3000, 360)
 
 
-#xG
-st.sidebar.write('Filter players by xG per 90 minutes played:')
-xGp90 = st.sidebar.slider('xG:', 0.0, 1.5, 0.0)
-
-df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & ~(df['nonpenalty_xG/90'] < xGp90) ]
+df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK')]
 df.Player.unique()
 
 #-------ASSIGNT VALUES FOR LATER USE------------------
@@ -314,22 +310,6 @@ df = (df[['Player', 'Team', 'Minutes played', 'Shots', 'Goal Ratio', 'xG_Differe
 
 st.write(df.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
 
-#-------------------- --------------------------------------------------Bar chart ---------------------------- 
-
-st.subheader('Midfielders with the best xA and Assists sum per 90 minutes played')
-
-
-#Create column with  xA  p90 plus Assists
-
-df['sum_xA_and_Assists'] = df['xA'] + df['Assists'] 
-df = df.sort_values('sum_xA_and_Assists').reset_index()
-
-#sets name to index
-df.set_index('Player',drop=True,inplace=True)
-#df = df.drop('level_0', 1)
-df = df.sort_values('sum_xA_and_Assists')
-
-st.bar_chart(df[['xA', 'Assists']])
 
 #------------------------------------------------------------------------------------------RADAR----------------------------------------
 
@@ -455,13 +435,13 @@ def delanteros_radar(midfield_values, name, minutes, age, SizePlayer):
             'xA p90m',
             'Goal \nRatio',
             'Shots \np90m',
-            'Key \npasses \np90m',
             '% Offensive \nduels won',
             'Successful \nattacking \nactions \np90m',
             'Progressive \nruns p90m',
             'Deep \ncompletions \np90m',
             'Accelerations \np90m',
             '% Shots \non target',
+            'Key \npasses \np90m',
             '% Accurate \npasses to \nfinal third',
             '% Accurate \nthrough \npasses',
             'Received \npasses \np90m',
@@ -495,7 +475,7 @@ def delanteros_radar(midfield_values, name, minutes, age, SizePlayer):
     #------Plot Radar
 
     # color for the slices and text
-    slice_colors = [Attack] * 12 + [Passes] * 3 + [Defense] * 3  # ataque - pases 
+    slice_colors = [Attack] * 11 + [Passes] * 4 + [Defense] * 3  # ataque - pases 
     text_colors = ["#F2F2F2"] * 18
 
     # instantiate PyPizza class
