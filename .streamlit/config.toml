@@ -165,10 +165,10 @@ dataFrameSerialization = "legacy"
 [theme]
 
 # The preset Streamlit theme that your custom theme inherits from. One of "light" or "dark".
-base = 'light'
+base = 'dark'
 
 # Primary accent color for interactive elements.
-# primaryColor =
+primaryColor = '#E1004E'
 
 # Background color for the main content area.
 # backgroundColor =
