@@ -314,10 +314,9 @@ st.write(df.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
 
 st.subheader('Strikers with the best xG and Non-Penalty Goal sum per 90 minutes played')
 
-
 #xG filter
 st.write('Filter players by xG per 90 minutes played:')
-xGp90 = st.slider('xG:', 0.0, 1.5, 0.0)
+xGp90 = st.slider('xG:', 0.0, 1.5, 0.20)
 
 xgbar = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & ~(df['nonpenalty_xG/90'] < xGp90)]
 
