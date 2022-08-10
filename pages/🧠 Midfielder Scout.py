@@ -424,7 +424,7 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
         'Accurate through passes, %':'% Accurate \nthrough \npasses',
         'PAdj Interceptions':'PAdj \nInterceptions',
         'Received passes per 90':'Received \npasses \np90m',
-        'Defensive duels per 90':'Defensive \nduels \np90m'}, inplace=True)
+        'Defensive duels won, %':'% Defensive \nduels \nwon'}, inplace=True)
 
 
     #Reorder Values
@@ -447,7 +447,7 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
             '% Accurate \nthrough \npasses',
             'Received \npasses \np90m',
             'Successful \ndefensive \nactions \np90m',
-            'Defensive \nduels \np90m',
+            '% Defensive \nduels \nwon',
             'PAdj \nInterceptions']]
     
     #Create a parameter list
