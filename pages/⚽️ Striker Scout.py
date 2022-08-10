@@ -228,7 +228,7 @@ ratingfilter = st.multiselect('Metrics:', striker_values.columns.difference(['Pl
                                                                         'Accurate short / medium passes, %', 'Shots per 90', 'xA per 90', 'xG per 90'])
 
 
-#---------------------------------------------COMPARATIVA percentile RANKING INDEX-------------------------------------------
+#--------------------------------------------- percentile RANKING INDEX-------------------------------------------
 
 #Normalize Min/Max Data  ************** Must pass cols as values to normalize  <------------------------------
 
@@ -311,7 +311,7 @@ df = (df[['Player', 'Team', 'Minutes played', 'Shots', 'Goal Ratio', 'xG_Differe
 
 st.write(df.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
 
-#-------------------- --------------------------------------------------Bar chart ---------------------------- 
+#----------------------------------------------------------------------Bar chart ---------------------------- 
 
 st.subheader('Strikers with the best xG and Non-Penalty Goal sum per 90 minutes played')
 
@@ -335,7 +335,7 @@ xgbar = xgbar.sort_values('sum_nonpenaltyxG_and_goalsP90')
 
 st.bar_chart(xgbar[['nonpenalty_xG/90', 'Non-penalty goals per 90']])
 
-#------------------------------------------------------------------------------------------RADAR---------------------------------------- TOT HEREEEEEEEEE
+#---------------------------------------------------------------------RADAR----------------------------------------
 
 st.title('PERCENTILE RANKING RADAR')
 
@@ -374,8 +374,8 @@ fullname = st.text_input('Type name to print on radar', option)
 st.write('The full name of the player is:', option)
 
 
-
-def delanteros_radar(striker_values, name, minutes, age, SizePlayer):
+#---------------- PRINT RADAR -----------------------------------
+def radar(striker_values, name, minutes, age, SizePlayer):
     
         
     #-----Define Bio values
@@ -683,14 +683,7 @@ def delanteros_radar(striker_values, name, minutes, age, SizePlayer):
     )
 
     st.pyplot(fig)
-   
-st.caption('Loading Radar...')
-my_bar = st.progress(0)
-
-for percent_complete in range(100):
-     time.sleep(0.5)
-     my_bar.progress(percent_complete + 1) 
 
 
-delanteros_radar(striker_values, option, minutes, age, SizePlayer = 45)
+radar(striker_values, option, minutes, age, SizePlayer = 45)
 
