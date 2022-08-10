@@ -220,7 +220,7 @@ ratingfilter = st.multiselect('Metrics:', midfield_values.columns.difference(['P
                   'Age', 'Market value', 'Contract expires', 'Matches played', 'Minutes played', 'Birth country', 'Passport country', 'Foot', 
                                                                              'Height', 'Weight', 'On loan', 'Assists', 'Non-penalty goals', 'Shots']), default=['Successful attacking actions per 90', 'xA per 90','Sum_xGp90_and_Goalsx90', 'Sum_xAx90_and_Assistx90', 'Successful attacking actions per 90', 'Goal %', 'Key passes per 90', 'Shots on target, %', 'Offensive duels won, %', 'Progressive runs per 90', 'Accelerations per 90', 'Successful defensive actions per 90', 'Deep completions per 90', 'Defensive duels won, %', 'Aerial duels won, %', 'nonpenalty_xG/90', 'Defensive duels per 90', 'PAdj Interceptions', 'Accurate forward passes, %', 'Accurate lateral passes, %', 'Accurate short / medium passes, %', 'Accurate long passes, %', 'Accurate passes to final third, %', 'Accurate through passes, %', 'Accurate progressive passes, %', 'Dribbles per 90', 'Successful dribbles, %', 'Received passes per 90', 'Assists per 90', 'Non-penalty goals per 90', 'xG per 90', 'Shots per 90'])
 
-#---------------------------------------------COMPARATIVA percentile RANKING INDEX-------------------------------------------
+#--------------------------------------------- percentile RANKING INDEX-------------------------------------------
 
 #Normalize Min/Max Data  ************** Must pass cols as values to normalize  <------------------------------
 
@@ -350,7 +350,8 @@ fullname = st.text_input('Type name to print on radar', option)
 st.write('The full name of the player is:', fullname)
 
 
-def delanteros_radar(midfield_values, name, minutes, age, SizePlayer):
+#---------------- PRINT RADAR -----------------------------------
+def radar(midfield_values, name, minutes, age, SizePlayer):
     
         
     #-----Define Bio values
@@ -665,11 +666,5 @@ def delanteros_radar(midfield_values, name, minutes, age, SizePlayer):
 
     st.pyplot(fig)
    
-st.caption('Loading Radar...')
-my_bar = st.progress(0)
 
-for percent_complete in range(100):
-     time.sleep(0.1)
-     my_bar.progress(percent_complete + 1) 
-
-delanteros_radar(midfield_values, option, minutes, age, SizePlayer = 45)
+radar(midfield_values, option, minutes, age, SizePlayer = 45)
