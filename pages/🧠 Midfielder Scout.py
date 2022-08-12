@@ -188,9 +188,19 @@ name = df['Player']
 
 
 '## CHOOSE METRICS TO CREATE CUSTOM TABLE'
-cols = st.multiselect('Metrics:', df.columns, default=['Player', 'Team within selected timeframe', 'Age', 'Minutes played',  
-                                                        'Passport country', 'xG', 'Goals', 'Non-penalty goals', 'Goal %', 'Shots', 
-                                                        'Assists', 'xA per 90', 'xA'])
+cols = st.multiselect('Metrics:', df.columns, default=['Player', 
+                                                       'Team within selected timeframe', 
+                                                       'Age', 
+                                                       'Minutes played',  
+                                                       'Passport country', 
+                                                       'xG', 
+                                                       'Goals', 
+                                                       'Non-penalty goals', 
+                                                       'Goal %', 
+                                                       'Shots', 
+                                                       'Assists', 
+                                                       'xA per 90', 
+                                                       'xA'])
 
 
 # show dataframe with the selected columns
@@ -200,14 +210,50 @@ st.write(df[cols])
 #------------------------------------------------------------ FILTER METRICS ---------------------------------------
 
 #Here must be all the values used in Index Rating and Radar
-midfield_filter = ['Player','Team', 'Team within selected timeframe', 'Age', 'Height', 'Foot', 'Matches played', 'Passport country', 'Position', 
-                   'Market value', 'Minutes played', 'Assists', 'xA per 90',
-                  'Sum_xGp90_and_Goalsx90', 'Sum_xAx90_and_Assistx90', 'Successful attacking actions per 90', 'Goal %', 'Key passes per 90',
-                  'Shots on target, %', 'Offensive duels won, %', 'Progressive runs per 90', 'Accelerations per 90', 'Successful defensive actions per 90', 
-                  'Deep completions per 90', 'Defensive duels won, %', 'Aerial duels won, %', 'nonpenalty_xG/90', 'Defensive duels per 90', 
-                  'PAdj Interceptions', 'Accurate forward passes, %', 'Accurate lateral passes, %', 'Accurate short / medium passes, %', 'Accurate long passes, %', 
-                  'Accurate passes to final third, %', 'Accurate through passes, %', 'Accurate progressive passes, %', 'Dribbles per 90', 'Successful dribbles, %',
-                  'Received passes per 90', 'Assists per 90', 'Non-penalty goals per 90', 'Non-penalty goals', 'xG per 90', 'Shots', 'Shots per 90']
+midfield_filter = ['Player',
+                   'Team', 
+                   'Team within selected timeframe', 
+                   'Age', 
+                   'Height', 
+                   'Foot', 
+                   'Matches played', 
+                   'Passport country', 
+                   'Position', 
+                   'Market value', 
+                   'Minutes played', 
+                   'Assists', 
+                   'xA per 90',
+                   'Sum_xGp90_and_Goalsx90', 
+                   'Sum_xAx90_and_Assistx90', 
+                   'Successful attacking actions per 90', 
+                   'Goal %', 
+                   'Key passes per 90',
+                   'Shots on target, %', 
+                   'Offensive duels won, %', 
+                   'Progressive runs per 90', 
+                   'Accelerations per 90', 
+                   'Successful defensive actions per 90', 
+                   'Deep completions per 90', 
+                   'Defensive duels won, %', 
+                   'Aerial duels won, %', 
+                   'nonpenalty_xG/90', 
+                   'Defensive duels per 90', 
+                   'PAdj Interceptions', 
+                   'Accurate forward passes, %', 
+                   'Accurate lateral passes, %', 
+                   'Accurate short / medium passes, %', 
+                   'Accurate long passes, %', 
+                   'Accurate passes to final third, %', 
+                   'Accurate through passes, %', 
+                   'Accurate progressive passes, %', 
+                   'Dribbles per 90', 
+                   'Successful dribbles, %',
+                   'Received passes per 90', 
+                   'Assists per 90', 
+                   'Non-penalty goals per 90', 
+                   'Non-penalty goals', 
+                   'xG per 90', 'Shots', 
+                   'Shots per 90']
 
 #save DF with new column
 
@@ -216,9 +262,57 @@ midfield_values = df[midfield_filter].copy()
 #user picks which metrics to use for player rating
 
 '## CHOOSE METRICS TO CREATE PLAYER RATING TABLE 🥇'
-ratingfilter = st.multiselect('Metrics:', midfield_values.columns.difference(['Player', 'Team', 'Team within selected timeframe', 'Shots', 'Non-penalty goals', 'Position', 
-                  'Age', 'Market value', 'Contract expires', 'Matches played', 'Minutes played', 'Birth country', 'Passport country', 'Foot', 
-                                                                             'Height', 'Weight', 'On loan', 'Assists', 'Non-penalty goals', 'Shots']), default=['Successful attacking actions per 90', 'xA per 90','Sum_xGp90_and_Goalsx90', 'Sum_xAx90_and_Assistx90', 'Successful attacking actions per 90', 'Goal %', 'Key passes per 90', 'Shots on target, %', 'Offensive duels won, %', 'Progressive runs per 90', 'Accelerations per 90', 'Successful defensive actions per 90', 'Deep completions per 90', 'Defensive duels won, %', 'Aerial duels won, %', 'nonpenalty_xG/90', 'Defensive duels per 90', 'PAdj Interceptions', 'Accurate forward passes, %', 'Accurate lateral passes, %', 'Accurate short / medium passes, %', 'Accurate long passes, %', 'Accurate passes to final third, %', 'Accurate through passes, %', 'Accurate progressive passes, %', 'Dribbles per 90', 'Successful dribbles, %', 'Received passes per 90', 'Assists per 90', 'Non-penalty goals per 90', 'xG per 90', 'Shots per 90'])
+ratingfilter = st.multiselect('Metrics:', midfield_values.columns.difference(['Player', 
+                                                                              'Team', 
+                                                                              'Team within selected timeframe', 
+                                                                              'Shots', 
+                                                                              'Non-penalty goals', 
+                                                                              'Position', 
+                                                                              'Age', 
+                                                                              'Market value', 
+                                                                              'Contract expires', 
+                                                                              'Matches played', 
+                                                                              'Minutes played', 
+                                                                              'Birth country', 
+                                                                              'Passport country', 
+                                                                              'Foot', 
+                                                                              'Height', 
+                                                                              'Weight', 
+                                                                              'On loan', 
+                                                                              'Assists', 
+                                                                              'Non-penalty goals', 
+                                                                              'Shots']), default=['Successful attacking actions per 90', 
+                                                                                                  'xA per 90',
+                                                                                                  'Sum_xGp90_and_Goalsx90', 
+                                                                                                  'Sum_xAx90_and_Assistx90', 
+                                                                                                  'Successful attacking actions per 90', 
+                                                                                                  'Goal %', 
+                                                                                                  'Key passes per 90', 
+                                                                                                  'Shots on target, %', 
+                                                                                                  'Offensive duels won, %', 
+                                                                                                  'Progressive runs per 90', 
+                                                                                                  'Accelerations per 90', 
+                                                                                                  'Successful defensive actions per 90', 
+                                                                                                  'Deep completions per 90', 
+                                                                                                  'Defensive duels won, %', 
+                                                                                                  'Aerial duels won, %', 
+                                                                                                  'nonpenalty_xG/90', 
+                                                                                                  'Defensive duels per 90', 
+                                                                                                  'PAdj Interceptions', 
+                                                                                                  'Accurate forward passes, %', 
+                                                                                                  'Accurate lateral passes, %', 
+                                                                                                  'Accurate short / medium passes, %', 
+                                                                                                  'Accurate long passes, %', 
+                                                                                                  'Accurate passes to final third, %', 
+                                                                                                  'Accurate through passes, %', 
+                                                                                                  'Accurate progressive passes, %', 
+                                                                                                  'Dribbles per 90', 
+                                                                                                  'Successful dribbles, %', 
+                                                                                                  'Received passes per 90', 
+                                                                                                  'Assists per 90', 
+                                                                                                  'Non-penalty goals per 90', 
+                                                                                                  'xG per 90', 
+                                                                                                  'Shots per 90'])
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
 
@@ -241,15 +335,44 @@ percentile['Index'] = midfield_values[ratingfilter].mean(axis=1)
 percentile[['Index']] = scaler.fit_transform(percentile[['Index']]).copy()
 
 #reorder columns
-percentile = (percentile[['Player', 'Index', 'Team within selected timeframe', 'Age', 'Matches played', 'Minutes played', 'Passport country', 'Shots', 
-                        'Non-penalty goals', 'xG per 90', 'Non-penalty goals per 90', 'xA per 90', 'Assists per 90', 'Shots per 90', 
-                          'Sum_xGp90_and_Goalsx90', 'Sum_xAx90_and_Assistx90',  
-                          'Successful attacking actions per 90', 'Goal %', 'Key passes per 90',
-                  'Shots on target, %', 'Offensive duels won, %', 'Progressive runs per 90', 'Accelerations per 90', 'Successful defensive actions per 90', 
-                  'Deep completions per 90', 'Defensive duels won, %', 'Aerial duels won, %', 'nonpenalty_xG/90', 'Defensive duels per 90', 
-                  'PAdj Interceptions', 'Accurate forward passes, %', 'Accurate long passes, %', 
-                  'Accurate passes to final third, %', 'Accurate progressive passes, %', 'Dribbles per 90', 'Successful dribbles, %',
-                  'Received passes per 90', 'Accurate through passes, %']]).copy()
+percentile = (percentile[['Player', 
+                          'Index', 
+                          'Team within selected timeframe', 
+                          'Age', 
+                          'Matches played', 
+                          'Minutes played', 
+                          'Passport country', 
+                          'Shots', 
+                          'Non-penalty goals', 
+                          'xG per 90', 
+                          'Non-penalty goals per 90',
+                          'xA per 90', 
+                          'Assists per 90', 
+                          'Shots per 90', 
+                          'Sum_xGp90_and_Goalsx90', 
+                          'Sum_xAx90_and_Assistx90',  
+                          'Successful attacking actions per 90', 
+                          'Goal %', 
+                          'Key passes per 90',
+                          'Shots on target, %', 
+                          'Offensive duels won, %', 
+                          'Progressive runs per 90', 
+                          'Accelerations per 90', 
+                          'Successful defensive actions per 90', 
+                          'Deep completions per 90', 
+                          'Defensive duels won, %', 
+                          'Aerial duels won, %', 
+                          'nonpenalty_xG/90', 
+                          'Defensive duels per 90', 
+                          'PAdj Interceptions', 
+                          'Accurate forward passes, %', 
+                          'Accurate long passes, %', 
+                          'Accurate passes to final third, %', 
+                          'Accurate progressive passes, %', 
+                          'Dribbles per 90', 
+                          'Successful dribbles, %',
+                          'Received passes per 90', 
+                          'Accurate through passes, %']]).copy()
 
 #Sort By
 
@@ -262,12 +385,30 @@ percentile.index = percentile.index + 1
 st.title('PERCENTILE RANKING')
 
 # print table
-st.write(percentile.style.applymap(styler, subset=['Index', 'Successful attacking actions per 90', 'Shots on target, %', 'Goal %', 'Offensive duels won, %', 
-                                                   'Successful defensive actions per 90', 'Defensive duels won, %', 'Aerial duels won, %', 
-                  'Progressive runs per 90', 'Accelerations per 90', 'Sum_xAx90_and_Assistx90', 'Deep completions per 90', 'Key passes per 90', 
-                  'Sum_xGp90_and_Goalsx90', 'Accurate passes to final third, %', 'Accurate through passes, %', 'Dribbles per 90', 
-                                                   'Successful dribbles, %', 'Received passes per 90', 'nonpenalty_xG/90', 'Defensive duels per 90', 
-                                                   'PAdj Interceptions', 'Accurate forward passes, %', 'Accurate long passes, %', 
+st.write(percentile.style.applymap(styler, subset=['Index', 
+                                                   'Successful attacking actions per 90', 
+                                                   'Shots on target, %', 
+                                                   'Goal %', 
+                                                   'Offensive duels won, %', 
+                                                   'Successful defensive actions per 90', 
+                                                   'Defensive duels won, %', 
+                                                   'Aerial duels won, %', 
+                                                   'Progressive runs per 90', 
+                                                   'Accelerations per 90', 
+                                                   'Sum_xAx90_and_Assistx90', 
+                                                   'Deep completions per 90', 
+                                                   'Key passes per 90', 
+                                                   'Sum_xGp90_and_Goalsx90', 
+                                                   'Accurate passes to final third, %', 
+                                                   'Accurate through passes, %', 
+                                                   'Dribbles per 90', 
+                                                   'Successful dribbles, %', 
+                                                   'Received passes per 90', 
+                                                   'nonpenalty_xG/90', 
+                                                   'Defensive duels per 90', 
+                                                   'PAdj Interceptions', 
+                                                   'Accurate forward passes, %', 
+                                                   'Accurate long passes, %', 
                                                    'Accurate progressive passes, %']).set_precision(2))
 
 #------------------------------------------------------------------Metricas de efectividad------------------------- 
@@ -301,9 +442,23 @@ df = df.sort_values('Goal %', ascending=False)
 
 #Choose columns to show
 
-df = (df[['Player', 'Team', 'Minutes played', 'Shots', 'Goal Ratio', 'xG_Difference', 'Non-penalty goals', 'nonpenalty_xG', 'Assists', 'xA', 'Position', 
-          'Passport country', 'Age', 
-          '90s', 'nonpenalty_xG/90', 'Non-penalty goals per 90', 'Shots per 90']])
+df = (df[['Player', 
+          'Team', 
+          'Minutes played', 
+          'Shots', 
+          'Goal Ratio', 
+          'xG_Difference', 
+          'Non-penalty goals', 
+          'nonpenalty_xG', 
+          'Assists', 
+          'xA', 
+          'Position', 
+          'Passport country', 
+          'Age', 
+          '90s', 
+          'nonpenalty_xG/90', 
+          'Non-penalty goals per 90', 
+          'Shots per 90']])
 
 
 # print table
