@@ -513,7 +513,7 @@ st.write(percentile.style.applymap(styler, subset=['Index',
 
 #------------------------------------------------------------------Gambeta-------------------------
 
-
+st.title('DRIBBLE SUCCESS')
 df = df.sort_values('Successful dribbles, %', ascending=False)
 
 
