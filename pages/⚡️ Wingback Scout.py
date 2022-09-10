@@ -403,23 +403,17 @@ ratingfilter = st.multiselect('Metrics:', winger_values.columns.difference(['Pla
                                                                             'Main_position']), 
                               default=['Successful attacking actions per 90', 
                                        'Offensive duels won, %', 
-                                       'Progressive runs per 90', 
-                                       'Accelerations per 90', 
+                                       'Progressive runs per 90',  
                                        'Key passes per 90', 
                                        'Deep completions per 90', 
                                        'Accurate passes to final third, %', 
-                                       'Accurate through passes, %', 
                                        'Successful defensive actions per 90', 
-                                       'Accurate forward passes, %', 
-                                       'Accurate long passes, %',
-                                       'Accurate progressive passes, %', 
-                                       'Accurate short / medium passes, %', 
+                                       'Accurate progressive passes, %',  
                                        'xA per 90', 
                                        'PAdj Interceptions', 
                                        'Successful dribbles, %', 
                                        'Accurate crosses, %', 
                                        'Defensive duels won, %', 
-                                       'Key passes per 90', 
                                        'Shots blocked per 90'])
 
 
@@ -493,6 +487,38 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'PAdj Interceptions']).set_precision(2))
 
 
+#------------------------------------------------------------------Gambeta-------------------------
+
+st.title('DRIBBLE SUCCESS RATE')
+df = df.sort_values('Successful dribbles, %', ascending=False)
+
+#dribble success flter
+st.sidebar.write('Filter players by dribbles per 90m:')
+driblesx90 = st.sidebar.slider('Dribbles per 90m:', 0, 3, 7)
+
+
+df = df[~(df['Dribbles per 90'] <= driblesx90)] 
+df.index = range(len(df.index))
+df = df.round()
+
+#No decimals
+df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
+
+#Add % sign
+df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str) + '%'
+    
+
+#rename 
+
+
+df.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
+
+
+df = df.reset_index(drop=True)
+df.index = df.index + 1
+
+pd.set_option('display.max_rows', df.shape[0]+1)
+st.write((df[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
 
 
 #---------------------------------------------------------------------RADAR----------------------------------------
@@ -850,3 +876,4 @@ def radar(winger_values, name, minutes, age, SizePlayer):
 
 
 radar(winger_values, option, minutes, age, SizePlayer = 45)
+
