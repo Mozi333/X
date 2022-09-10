@@ -527,7 +527,7 @@ dribblesuccess = st.sidebar.slider('Dribble success rate:', 0, .60, 1.0)
 
 
 
-df = df[~(df['Dribbles per 90'] <= driblesx90) & (df = df[~(df['Successful dribbles, %'] <= dribblesuccess)]) ] 
+df = df[~(df['Dribbles per 90'] <= driblesx90) & (df[~(df['Successful dribbles, %'] <= dribblesuccess)]) ] 
 
 df.index = range(len(df.index))
 df = df.round()
@@ -964,5 +964,3 @@ def radar(winger_values, name, minutes, age, SizePlayer):
 
 
 radar(winger_values, option, minutes, age, SizePlayer = 45)
-
-
