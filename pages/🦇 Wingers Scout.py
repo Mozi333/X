@@ -521,12 +521,6 @@ st.sidebar.write('Filter players by dribbles per 90m:')
 driblesx90 = st.sidebar.slider('Dribbles per 90m:', 0, 3, 7)
 
 
-#Minutes Played
-st.sidebar.write('Filter players by dribble success rate:')
-dribblesuccess = st.sidebar.slider('Dribble success rate:', 0, .60, 1.0)
-
-
-
 df = df[~(df['Dribbles per 90'] <= driblesx90)] 
 df.index = range(len(df.index))
 df = df.round()
@@ -963,4 +957,3 @@ def radar(winger_values, name, minutes, age, SizePlayer):
 
 
 radar(winger_values, option, minutes, age, SizePlayer = 45)
-
