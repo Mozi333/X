@@ -513,11 +513,22 @@ st.write(percentile.style.applymap(styler, subset=['Index',
 
 #------------------------------------------------------------------Gambeta-------------------------
 
-st.title('DRIBBLE SUCCESS')
+st.title('DRIBBLE SUCCESS RATE')
 df = df.sort_values('Successful dribbles, %', ascending=False)
 
+#dribble success flter
+st.sidebar.write('Filter players by dribbles per 90m:')
+driblesx90 = st.sidebar.slider('Dribbles per 90m:', 0, 3, 7)
 
-df = df[~(df['Dribbles per 90'] <= 3)] 
+
+#Minutes Played
+st.sidebar.write('Filter players by dribble success rate:')
+dribblesuccess = st.sidebar.slider('Dribble success rate:', 0, .60, 1.0)
+
+
+
+df = df[~(df['Dribbles per 90'] <= driblesx90) & (df = df[~(df['Successful dribbles, %'] <= dribblesuccess)]) ] 
+
 df.index = range(len(df.index))
 df = df.round()
 
@@ -953,3 +964,5 @@ def radar(winger_values, name, minutes, age, SizePlayer):
 
 
 radar(winger_values, option, minutes, age, SizePlayer = 45)
+
+
