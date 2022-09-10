@@ -542,7 +542,7 @@ df = df.reset_index(drop=True)
 df.index = df.index + 1
 
 pd.set_option('display.max_rows', df.shape[0]+1)
-st.write((df[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age']]))
+st.write((df[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
 
 
 
