@@ -517,8 +517,8 @@ st.title('DRIBBLE SUCCESS RATE')
 df = df.sort_values('Successful dribbles, %', ascending=False)
 
 #dribble success flter
-st.sidebar.write('Filter players by dribbles per 90m:')
-driblesx90 = st.sidebar.slider('Dribbles per 90m:', 0, 3, 7)
+st.write('Filter players by dribbles per 90m:')
+driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
 
 
 df = df[~(df['Dribbles per 90'] <= driblesx90)] 
