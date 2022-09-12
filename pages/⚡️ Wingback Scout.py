@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 st.set_page_config(layout="wide")
 import pandas as pd
@@ -496,7 +494,7 @@ df = df.sort_values('Successful dribbles, %', ascending=False)
 
 #dribble success flter
 st.write('Filter players by dribbles per 90m:')
-driblesx90 = st.sidebar.slider('Dribbles per 90m:', 0, 7, 3)
+driblesx90 = st.slider('Dribbles per 90m:', 0, 7, 3)
 
 
 df = df[~(df['Dribbles per 90'] <= driblesx90)] 
