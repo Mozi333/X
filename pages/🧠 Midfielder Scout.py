@@ -411,6 +411,41 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Accurate long passes, %', 
                                                    'Accurate progressive passes, %']).set_precision(2))
 
+#------------------------------------------------------------------Gambeta-------------------------
+
+st.title('DRIBBLE SUCCESS RATE')
+df = df.sort_values('Successful dribbles, %', ascending=False)
+
+#dribble success flter
+st.write('Filter players by dribbles per 90m:')
+driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
+
+
+df = df[~(df['Dribbles per 90'] <= driblesx90)] 
+df.index = range(len(df.index))
+df = df.round()
+
+#No decimals
+df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
+
+#Add % sign
+df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str) + '%'
+    
+
+#rename 
+
+
+df.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
+
+
+df = df.reset_index(drop=True)
+df.index = df.index + 1
+
+pd.set_option('display.max_rows', df.shape[0]+1)
+st.write((df[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
+
+
+
 #------------------------------------------------------------------Metricas de efectividad------------------------- 
 
 
@@ -823,3 +858,4 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
    
 
 radar(midfield_values, option, minutes, age, SizePlayer = 45)
+
