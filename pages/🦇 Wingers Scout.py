@@ -511,92 +511,100 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Successful dribbles, %', 
                                                    'PAdj Interceptions']).set_precision(2))
 
-#------------------------------------------------------------------Gambeta-------------------------
+#--------------------------------------- TABS ------------------------------
 
-st.title('DRIBBLE SUCCESS RATE')
-df = df.sort_values('Successful dribbles, %', ascending=False)
-
-#dribble success flter
-st.write('Filter players by dribbles per 90m:')
-driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
+tab1, tab2 = st.tabs(["Shot Effectivenes", "Dribbling"])
 
 
-df = df[~(df['Dribbles per 90'] <= driblesx90)] 
-df.index = range(len(df.index))
-df = df.round()
+#------------------------------------------------------------------Dribble-------------------------
 
-#No decimals
-df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
+with tab1:
 
-#Add % sign
-df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str) + '%'
-    
+    st.title('DRIBBLE SUCCESS RATE')
+    df = df.sort_values('Successful dribbles, %', ascending=False)
 
-#rename 
+    #dribble success flter
+    st.write('Filter players by dribbles per 90m:')
+    driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
 
 
-df.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
+    df = df[~(df['Dribbles per 90'] <= driblesx90)] 
+    df.index = range(len(df.index))
+    df = df.round()
+
+    #No decimals
+    df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
+
+    #Add % sign
+    df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str) + '%'
 
 
-df = df.reset_index(drop=True)
-df.index = df.index + 1
+    #rename 
 
-pd.set_option('display.max_rows', df.shape[0]+1)
-st.write((df[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
+
+    df.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
+
+
+    df = df.reset_index(drop=True)
+    df.index = df.index + 1
+
+    pd.set_option('display.max_rows', df.shape[0]+1)
+    st.write((df[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
 
 
 
 #------------------------------------------------------------------Metricas de efectividad------------------------- 
 
-
-st.title('EFFECTIVENESS METRICS')
-
-
-
-#result all 3 aspects *Style Index Colors
+with tab2:
+    
+    st.title('EFFECTIVENESS METRICS')
 
 
 
-def styler(v):
-    if v > 0.08:
-        return 'background-color:#E74C3C' #red
-    elif v > -0.08:
-         return 'background-color:#52CD34' #green
-    if v < -0.08:
-         return 'background-color:#E74C3C' #red
-    # elif v < .40:
-    #     return 'background-color:#E67E22' #orange
-    # else:
-    #     return 'background-color:#F7DC6F'  #yellow
+    #result all 3 aspects *Style Index Colors
 
 
-#Sort By
 
-df = df.sort_values('Goal %', ascending=False)
-
-
-#Choose columns to show
-
-df = (df[['Player', 
-          'Team', 
-          'Minutes played', 
-          'Shots', 
-          'Goal Ratio', 
-          'xG_Difference', 
-          'Non-penalty goals', 
-          'nonpenalty_xG', 
-          'Position', 
-          'Passport country', 
-          'Age', 
-          '90s', 
-          'nonpenalty_xG/90', 
-          'Non-penalty goals per 90', 
-          'Shots per 90']])
+    def styler(v):
+        if v > 0.08:
+            return 'background-color:#E74C3C' #red
+        elif v > -0.08:
+             return 'background-color:#52CD34' #green
+        if v < -0.08:
+             return 'background-color:#E74C3C' #red
+        # elif v < .40:
+        #     return 'background-color:#E67E22' #orange
+        # else:
+        #     return 'background-color:#F7DC6F'  #yellow
 
 
-# print table
+    #Sort By
 
-st.write(df.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
+    df = df.sort_values('Goal %', ascending=False)
+
+
+    #Choose columns to show
+
+    df = (df[['Player', 
+              'Team', 
+              'Minutes played', 
+              'Shots', 
+              'Goal Ratio', 
+              'xG_Difference', 
+              'Non-penalty goals', 
+              'nonpenalty_xG', 
+              'Position', 
+              'Passport country', 
+              'Age', 
+              '90s', 
+              'nonpenalty_xG/90', 
+              'Non-penalty goals per 90', 
+              'Shots per 90']])
+
+
+    # print table
+
+    st.write(df.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
 
 
 #---------------------------------------------------------------------RADAR----------------------------------------
