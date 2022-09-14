@@ -515,7 +515,7 @@ st.write(percentile.style.applymap(styler, subset=['Index',
 
 st.title('EFFECTIVENESS METRICS')
 
-tab1, tab2 = st.tabs(["Shooting", "Dribbling"])
+tab1, tab2 = st.tabs(["Dribbling", "Shooting"])
 
 
 #------------------------------------------------------------------Dribble-------------------------
