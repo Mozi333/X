@@ -559,7 +559,7 @@ with tab1:
 
 with tab2:
     
-    st.subheader('SHOOTING')
+    st.subheader('SHOOTING SUCCESS RATE')
 
 
 
