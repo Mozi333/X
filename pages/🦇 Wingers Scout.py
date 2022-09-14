@@ -515,50 +515,13 @@ st.write(percentile.style.applymap(styler, subset=['Index',
 
 st.title('EFFECTIVENESS METRICS')
 
-tab1, tab2 = st.tabs(["Dribbling", "Shooting"])
+tab1, tab2 = st.tabs(["Shooting", "Dribbling"])
 
 
-#------------------------------------------------------------------Dribble-------------------------
+#------------------------------------------------------------------Shooting-------------------------
 
 with tab1:
 
-    st.subheader('DRIBBLE SUCCESS RATE')
-    df = df.sort_values('Successful dribbles, %', ascending=False)
-
-    #dribble success flter
-    st.write('Filter players by dribbles per 90m:')
-    driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
-
-
-    df = df[~(df['Dribbles per 90'] <= driblesx90)] 
-    df.index = range(len(df.index))
-    df = df.round()
-
-    #No decimals
-    df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
-
-    #Add % sign
-    df['Successful dribbles, %'] = df['Successful dribbles, %'].astype(str) + '%'
-
-
-    #rename 
-
-
-    df.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
-
-
-    df = df.reset_index(drop=True)
-    df.index = df.index + 1
-
-    pd.set_option('display.max_rows', df.shape[0]+1)
-    st.write((df[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
-
-
-
-#------------------------------------------------------------------Metricas de efectividad------------------------- 
-
-with tab2:
-    
     st.subheader('SHOOTING SUCCESS RATE')
 
 
@@ -582,31 +545,68 @@ with tab2:
 
     #Sort By
 
-    df = df.sort_values('Goal %', ascending=False)
+    shooting = df.sort_values('Shots', ascending=False)
 
 
     #Choose columns to show
 
-    df = (df[['Player', 
+    shooting = (shooting[['Player', 
               'Team', 
               'Minutes played', 
-              'Shots', 
-              'Goal Ratio', 
-              'xG_Difference', 
-              'Non-penalty goals', 
+              'Shots',
+              'Goal Ratio',
+              'xG_Difference',
+              'Non-penalty goals',
+              'nonpenalty_xG/90', 
+              'Non-penalty goals per 90',     
               'nonpenalty_xG', 
               'Position', 
               'Passport country', 
               'Age', 
               '90s', 
-              'nonpenalty_xG/90', 
-              'Non-penalty goals per 90', 
               'Shots per 90']])
 
 
     # print table
 
-    st.write(df.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
+    st.write(shooting.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
+
+
+
+#------------------------------------------------------------------Dribble------------------------- 
+
+with tab2:
+    
+    st.subheader('DRIBBLE SUCCESS RATE')
+    dribbling = df.sort_values('Successful dribbles, %', ascending=False)
+
+    #dribble success flter
+    st.write('Filter players by dribbles per 90m:')
+    driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
+
+
+    dribbling = dribbling[~(dribbling['Dribbles per 90'] <= driblesx90)] 
+    dribbling.index = range(len(dribbling.index))
+    dribbling = dribbling.round()
+
+    #No decimals
+    dribbling['Successful dribbles, %'] = dribbling['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
+
+    #Add % sign
+    dribbling['Successful dribbles, %'] = dribbling['Successful dribbles, %'].astype(str) + '%'
+
+
+    #rename 
+
+
+    dribbling.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
+
+
+    dribbling = dribbling.reset_index(drop=True)
+    dribbling.index = dribbling.index + 1
+
+    pd.set_option('display.max_rows', dribbling.shape[0]+1)
+    st.write((dribbling[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
 
 
 #---------------------------------------------------------------------RADAR----------------------------------------
