@@ -515,14 +515,14 @@ st.write(percentile.style.applymap(styler, subset=['Index',
 
 st.title('EFFECTIVENESS METRICS')
 
-tab1, tab2 = st.tabs(["Shot", "Dribbling"])
+tab1, tab2 = st.tabs(["Shooting", "Dribbling"])
 
 
 #------------------------------------------------------------------Dribble-------------------------
 
 with tab1:
 
-    st.title('DRIBBLE SUCCESS RATE')
+    st.subheader('DRIBBLE SUCCESS RATE')
     df = df.sort_values('Successful dribbles, %', ascending=False)
 
     #dribble success flter
@@ -559,7 +559,7 @@ with tab1:
 
 with tab2:
     
-    st.title('SHOT')
+    st.subheader('SHOOTING')
 
 
 
