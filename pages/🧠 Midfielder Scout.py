@@ -415,7 +415,7 @@ st.write(percentile.style.applymap(styler, subset=['Index',
 
 st.title('EFFECTIVENESS METRICS')
 
-tab1, tab2 = st.tabs(["Shooting", "Dribbling"])
+tab1, tab2, tab3 = st.tabs(["Shooting", "Dribbling", 'Passing'])
 
 
 #------------------------------------------------------------------Shooting-------------------------
@@ -470,6 +470,43 @@ with tab1:
     # print table
 
     st.write(shooting.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
+    
+
+#------------------------------------------------------------------Passing------------------------- 
+
+with tab3:
+    
+    st.subheader('PASSING SUCCESS')
+    smartpassing = df.sort_values('Accurate smart passes, %', ascending=False)
+
+    #dribble success flter
+    st.write('Filter players by Smart passes per 90m:')
+    smartpassesx90 = st.slider('Smart passes per 90:',  0.0, 5.0, 0.5)
+
+
+    smartpassing = smartpassing[~(smartpassing['Smart passes per 90'] <= smartpassesx90)] 
+    smartpassing.index = range(len(smartpassing.index))
+    smartpassing = smartpassing.round(2)
+
+    #No decimals
+    #smartpassing['Accurate smart passes, %'] = smartpassing['Accurate smart passes, %'].astype(str).apply(lambda x: x.replace('.0',''))
+
+    #Add % sign
+    smartpassing['Accurate smart passes, %'] = smartpassing['Accurate smart passes, %'].astype(str) + '%'
+
+
+    #rename 
+
+
+    smartpassing.rename(columns={'Accurate smart passes, %':'% of Accurate smart passes'}, inplace=True)
+
+
+    smartpassing = smartpassing.reset_index(drop=True)
+    smartpassing.index = smartpassing.index + 1
+
+    pd.set_option('display.max_rows', smartpassing.shape[0]+1)
+    st.write((smartpassing[['Player','Smart passes per 90', '% of Accurate smart passes', 'Key passes per 90', 'Team', 
+                            'Age', 'Passport country', 'Market value', 'Contract expires']]))
 
 
 
