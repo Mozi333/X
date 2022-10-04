@@ -249,7 +249,8 @@ striker_filter = ['Player',
                   'Shots per 90', 
                   'Assists', 
                   'Non-penalty goals per 90', 
-                  'Head goals per 90']
+                  'Head goals per 90',
+                 'Smart passes per 90']
 
 #save DF with Striker filter columns
 
@@ -298,7 +299,8 @@ ratingfilter = st.multiselect('Metrics:', striker_values.columns.difference(['Pl
                                                                                                    'Accurate short / medium passes, %', 
                                                                                                    'Shots per 90', 
                                                                                                    'xA per 90', 
-                                                                                                   'xG per 90'])
+                                                                                                   'xG per 90',
+                                                                                                   'Smart passes per 90'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -347,7 +349,8 @@ percentile = (percentile[['Player',
                           'Accelerations per 90', 
                           'Deep completions per 90', 
                           'Accurate passes to final third, %', 
-                          'Accurate through passes, %']]).copy()
+                          'Accurate through passes, %',
+                         'Smart passes per 90']]).copy()
 
 #Sort By
 
@@ -377,7 +380,8 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'xG per 90', 
                                                    'Head goals per 90',
                                                    'Non-penalty goals per 90', 
-                                                   'Shots per 90']).set_precision(2))
+                                                   'Shots per 90',
+                                                  'Smart passes per 90']).set_precision(2))
 
 #--------------------------------------- TABS ------------------------------
 
@@ -855,109 +859,3 @@ def radar(striker_values, name, minutes, age, SizePlayer):
 
 radar(striker_values, option, minutes, age, SizePlayer = 45)
 
-
-#---------------------- COMPARE TWO PLAYERS RADAR -----------------------
-
-# parameter and values list
-params = [  'Player',
-            'xG \np90m',
-            'Goals \np90m',
-            'xA p90m',
-            'Goal \nRatio',
-            'Shots \np90m',
-            '% Offensive \nduels won',
-            'Successful \nattacking \nactions \np90m',
-            'Progressive \nruns p90m',
-            'Deep \ncompletions \np90m',
-            'Accelerations \np90m',
-            '% Shots \non target',
-            'Key \npasses \np90m',
-            '% Accurate \npasses to \nfinal third',
-            '% Accurate \nthrough \npasses',
-            'Successful \ndefensive \nactions \np90m'
-]
-
-# dummy values
-values = [15, 7, 57, 86, 63, 51, 11, 32, 85, 69, 90, 54]    # for Player 1
-values_2 = [31, 41, 43, 42, 47, 24, 60, 60, 28, 70, 92, 64]  # for Player 2
-
-# pass True in that parameter-index whose values are to be adjusted
-# here True values are passed for "\nTouches\nper Turnover" and "pAdj\nPress Regains" params
-params_offset = [
-    False, False, False, False, False, False,
-    False, False, False, True, True, False
-]
-
-# instantiate PyPizza class
-baker = PyPizza(
-    params=params,                  # list of parameters
-    background_color="#EBEBE9",     # background color
-    straight_line_color="#222222",  # color for straight lines
-    straight_line_lw=1,             # linewidth for straight lines
-    last_circle_lw=1,               # linewidth of last circle
-    last_circle_color="#222222",    # color of last circle
-    other_circle_ls="-.",           # linestyle for other circles
-    other_circle_lw=1               # linewidth for other circles
-)
-
-# plot pizza
-fig, ax = baker.make_pizza(
-    values,                     # list of values
-    compare_values=values_2,    # comparison values
-    figsize=(8, 8),             # adjust figsize according to your need
-    kwargs_slices=dict(
-        facecolor="#1A78CF", edgecolor="#222222",
-        zorder=2, linewidth=1
-    ),                          # values to be used when plotting slices
-    kwargs_compare=dict(
-        facecolor="#FF9300", edgecolor="#222222",
-        zorder=2, linewidth=1,
-    ),
-    kwargs_params=dict(
-        color="#000000", fontsize=12,
-        fontproperties=font_normal.prop, va="center"
-    ),                          # values to be used when adding parameter
-    kwargs_values=dict(
-        color="#000000", fontsize=12,
-        fontproperties=font_normal.prop, zorder=3,
-        bbox=dict(
-            edgecolor="#000000", facecolor="cornflowerblue",
-            boxstyle="round,pad=0.2", lw=1
-        )
-    ),                          # values to be used when adding parameter-values labels
-    kwargs_compare_values=dict(
-        color="#000000", fontsize=12, fontproperties=font_normal.prop, zorder=3,
-        bbox=dict(edgecolor="#000000", facecolor="#FF9300", boxstyle="round,pad=0.2", lw=1)
-    ),                          # values to be used when adding parameter-values labels
-)
-
-
-# adjust text for comparison-values-text
-baker.adjust_texts(params_offset, offset=-0.17, adj_comp_values=True)
-
-# add title
-fig_text(
-    0.515, 0.99, "<Player 1> vs <Player 2>", size=17, fig=fig,
-    highlight_textprops=[{"color": '#1A78CF'}, {"color": '#EE8900'}],
-    ha="center", fontproperties=font_bold.prop, color="#000000"
-)
-
-# add subtitle
-fig.text(
-    0.515, 0.942,
-    "Percentile Rank Chart",
-    size=15,
-    ha="center", fontproperties=font_bold.prop, color="#000000"
-)
-
-# add credits
-CREDIT_1 = "dummy-data"
-CREDIT_2 = "inspired by: @Worville, @FootballSlices, @somazerofc & @Soumyaj15209314"
-
-fig.text(
-    0.99, 0.005, f"{CREDIT_1}\n{CREDIT_2}", size=9,
-    fontproperties=font_italic.prop, color="#000000",
-    ha="right"
-)
-
-plt.show()
