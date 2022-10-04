@@ -253,7 +253,8 @@ midfield_filter = ['Player',
                    'Non-penalty goals per 90', 
                    'Non-penalty goals', 
                    'xG per 90', 'Shots', 
-                   'Shots per 90']
+                   'Shots per 90',
+                   'Smart passes per 90',]
 
 #save DF with new column
 
@@ -312,7 +313,8 @@ ratingfilter = st.multiselect('Metrics:', midfield_values.columns.difference(['P
                                                                                                   'Assists per 90', 
                                                                                                   'Non-penalty goals per 90', 
                                                                                                   'xG per 90', 
-                                                                                                  'Shots per 90'])
+                                                                                                  'Shots per 90',
+                                                                                                  'Smart passes per 90'])
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
 
@@ -354,6 +356,7 @@ percentile = (percentile[['Player',
                           'Successful attacking actions per 90', 
                           'Goal %', 
                           'Key passes per 90',
+                          'Smart passes per 90',
                           'Shots on target, %', 
                           'Offensive duels won, %', 
                           'Progressive runs per 90', 
@@ -398,6 +401,7 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Sum_xAx90_and_Assistx90', 
                                                    'Deep completions per 90', 
                                                    'Key passes per 90', 
+                                                   'Smart passes per 90',
                                                    'Sum_xGp90_and_Goalsx90', 
                                                    'Accurate passes to final third, %', 
                                                    'Accurate through passes, %', 
@@ -903,4 +907,74 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
    
 
 radar(midfield_values, option, minutes, age, SizePlayer = 45)
+
+
+#-------------------------------------------------------------------Predict Value----------------------------------------
+
+st.title('PREDICT PLAYER VALUES 🔮💰')
+
+### Define values to use
+
+df = df[['Player',
+         'Team',
+         'Market value',
+         'Minutes played',
+         'Age',
+         'xG per 90',
+         'Shots per 90',
+         'Assists per 90',
+         'Touches in box per 90',
+         'Progressive runs per 90',
+         'Received passes per 90',
+         'Smart passes per 90',
+         'Key passes per 90']]
+
+#assign values to add back into df
+
+value = df['Market value']
+name = df['Player']
+team = df['Team']
+minutes = df['Minutes played']
+
+#drop metrics that are not ints or are not needed
+df = df.drop(['Market value', 'Player', 'Team', 'Minutes played'], axis=1)
+
+#add market value back into end of df
+
+df['value'] = value
+
+df.head()
+
+### Create DF NP to create x and y train df's
+
+df_np = df.to_numpy()
+
+#take the first N columns and assign them to x train and the last column (MARKET VALUE) and assign it to y train
+
+X_train, y_train = df_np[:, :9], df_np[:, -1]
+
+from sklearn.linear_model import LinearRegression
+
+sklearn_model = LinearRegression().fit(X_train, y_train)
+sklearn_y_predictions = sklearn_model.predict(X_train).astype(int)
+
+predictions_df = pd.DataFrame({
+                               'Age': df['Age'],
+                               'Value': df['value'],
+                               'Value Prediction':sklearn_y_predictions})
+
+#add back name and team columns
+predictions_df['Name'] = name
+predictions_df['Team'] = team
+predictions_df['Minutes played'] = minutes
+
+#reorder columns
+predictions_df = predictions_df[['Name', 'Team', 'Age', 'Value', 'Value Prediction', 'Minutes played']]
+predictions_df.reset_index(drop=True, inplace=True)
+
+#format using commas for value
+#predictions_df['Value'] = predictions_df.apply(lambda x: "{:,}".format(x['Value']), axis=1)
+predictions_df['Value Prediction'] = predictions_df.apply(lambda x: "{:,}".format(x['Value Prediction']), axis=1)
+
+st.write(predictions_df)
 
