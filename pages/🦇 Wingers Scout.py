@@ -26,12 +26,12 @@ import time
 
 #-----------------------------FUNCTIONS--------------------------------------------------------------
 
-st.title('WINGBACK SCOUT 🕵🏼‍♂️⚡️')
+st.title('WINGER SCOUT 🕵🏼‍♂️🏃‍♂️')
 
 
 def load_data():
     
-    data = (r'https://github.com/Mozi333/X/blob/main/data/lateralessamericas.xlsx?raw=true')
+    data = (r'https://github.com/Mozi333/X/blob/main/data/extremosamericas.xlsx?raw=true')
     file = requests.get(data)
     df = pd.read_excel(file.content)
     
@@ -400,21 +400,33 @@ ratingfilter = st.multiselect('Metrics:', winger_values.columns.difference(['Pla
                                                                             'Weight', 
                                                                             'On loan', 
                                                                             'Assists', 
-                                                                            'Main_position']), 
-                              default=['Successful attacking actions per 90', 
-                                       'Offensive duels won, %', 
-                                       'Progressive runs per 90',  
-                                       'Key passes per 90', 
-                                       'Deep completions per 90', 
-                                       'Accurate passes to final third, %', 
-                                       'Successful defensive actions per 90', 
-                                       'Accurate progressive passes, %',  
-                                       'xA per 90', 
-                                       'PAdj Interceptions', 
-                                       'Successful dribbles, %', 
-                                       'Accurate crosses, %', 
-                                       'Defensive duels won, %', 
-                                       'Shots blocked per 90'])
+                                                                            'Main_position']), default=['Successful attacking actions per 90', 
+                                                                                                        'Shots on target, %', 
+                                                                                                        'Goal %', 
+                                                                                                        'Offensive duels won, %', 
+                                                                                                        'Progressive runs per 90', 
+                                                                                                        'Accelerations per 90', 
+                                                                                                        'Sum_xAx90_and_Assistx90', 
+                                                                                                        'Key passes per 90', 
+                                                                                                        'Sum_xGp90_and_Goalsx90', 
+                                                                                                        'Deep completions per 90', 
+                                                                                                        'Accurate passes to final third, %', 
+                                                                                                        'Accurate through passes, %', 
+                                                                                                        'Successful defensive actions per 90',
+                                                                                                        'nonpenalty_xG/90', 
+                                                                                                        'Non-penalty goals per 90', 
+                                                                                                        'Accurate forward passes, %', 
+                                                                                                        'Accurate lateral passes, %', 
+                                                                                                        'Accurate long passes, %',
+                                                                                                        'Accurate progressive passes, %', 
+                                                                                                        'Accurate short / medium passes, %', 
+                                                                                                        'Shots per 90', 
+                                                                                                        'xA per 90', 
+                                                                                                        'xG per 90', 
+                                                                                                        'PAdj Interceptions', 
+                                                                                                        'Successful dribbles, %', 
+                                                                                                        'Accurate crosses, %', 
+                                                                                                        'Defensive duels won, %'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -441,12 +453,19 @@ percentile[['Index']] = scaler.fit_transform(percentile[['Index']]).copy()
 percentile = (percentile[['Player', 
                           'Index', 
                           'Team within selected timeframe', 
-                          'Age', 'Position', 'Matches played', 
+                          'Age', 
+                          'Matches played', 
                           'Minutes played', 
                           'Passport country', 
                           'Shots', 
                           'Non-penalty goals', 
-                          'Sum_xAx90_and_Assistx90', 
+                          'xG per 90', 
+                          'Non-penalty goals per 90', 
+                          'Shots per 90', 
+                          'Sum_xGp90_and_Goalsx90', 
+                          'Sum_xAx90_and_Assistx90',  
+                          'Shots on target, %', 
+                          'Goal %', 
                           'Successful defensive actions per 90', 
                           'Offensive duels won, %', 
                           'Key passes per 90', 
@@ -473,19 +492,24 @@ st.title('PERCENTILE RANKING')
 # print table
 st.write(percentile.style.applymap(styler, subset=['Index', 
                                                    'Successful attacking actions per 90', 
+                                                   'Shots on target, %', 
+                                                   'Goal %', 
                                                    'Offensive duels won, %',
                                                    'Progressive runs per 90', 
                                                    'Accelerations per 90', 
                                                    'Sum_xAx90_and_Assistx90', 
                                                    'Deep completions per 90', 
                                                    'Key passes per 90', 
+                                                   'Sum_xGp90_and_Goalsx90', 
                                                    'Accurate passes to final third, %', 
                                                    'Accurate through passes, %', 
                                                    'Successful defensive actions per 90', 
+                                                   'xG per 90', 
+                                                   'Non-penalty goals per 90', 
+                                                   'Shots per 90', 
                                                    'Accurate crosses, %', 
                                                    'Successful dribbles, %', 
                                                    'PAdj Interceptions']).set_precision(2))
-
 
 #--------------------------------------- TABS ------------------------------
 
@@ -699,15 +723,19 @@ def radar(winger_values, name, minutes, age, SizePlayer):
         'PAdj Interceptions':'PAdj \nInterceptions',
         'Successful dribbles, %':'% Successful \ndribbles',
         'Accurate crosses, %':'% Accurate \ncrosses',
-        'Defensive duels won, %':'% Defensive \nduels \nwon',
-        'Shots blocked per 90':'Shots \nblocked \np90m'}, inplace=True)
+        'Defensive duels won, %':'% Defensive \nduels \nwon'}, inplace=True)
 
 
     #Reorder Values
 
     winger_values = winger_values[[
             'Player',
+            'xG \np90m',
+            'Goals \np90m',
             'xA p90m',
+            'Goal \nRatio',
+            'Shots \np90m',
+            '% Shots \non target',
             '% Offensive \nduels won',
             'Successful \nattacking \nactions \np90m',
             'Progressive \nruns p90m',
@@ -719,7 +747,6 @@ def radar(winger_values, name, minutes, age, SizePlayer):
             '% Accurate \ncrosses',
             '% Defensive \nduels \nwon',
             'Successful \ndefensive \nactions \np90m',
-            'Shots \nblocked \np90m',
             'PAdj \nInterceptions']]
     
     #Create a parameter list
@@ -748,8 +775,8 @@ def radar(winger_values, name, minutes, age, SizePlayer):
     #------Plot Radar
 
     # color for the slices and text
-    slice_colors = [Attack] * 6 + [Passes] * 4 + [Defense] * 4  # ataque - pases 
-    text_colors = ["#F2F2F2"] * 14
+    slice_colors = [Attack] * 11 + [Passes] * 4 + [Defense] * 3  # ataque - pases 
+    text_colors = ["#F2F2F2"] * 18
 
     # instantiate PyPizza class
     baker = PyPizza(
@@ -940,3 +967,5 @@ def radar(winger_values, name, minutes, age, SizePlayer):
 
 
 radar(winger_values, option, minutes, age, SizePlayer = 45)
+
+
