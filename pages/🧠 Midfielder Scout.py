@@ -31,7 +31,7 @@ st.title('MIDFIELDER SCOUT 🕵🏼‍♂️🧠')
 
 def load_data():
     
-    data = (r'https://github.com/Mozi333/X/blob/main/data/europe.xlsx?raw=true')
+    data = (r'https://github.com/Mozi333/X/blob/main/data/mediosbeuropa.xlsx?raw=true')
     file = requests.get(data)
     df = pd.read_excel(file.content)
     
