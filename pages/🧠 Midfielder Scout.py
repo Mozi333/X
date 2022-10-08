@@ -548,6 +548,73 @@ with tab2:
 
     pd.set_option('display.max_rows', dribbling.shape[0]+1)
     st.write((dribbling[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
+    
+    
+#-------------------------------------------------------------------Predict Value----------------------------------------
+
+st.title('PREDICT PLAYER VALUES 🔮💰')
+
+### Define values to use
+
+predict_df = df[['Player',
+         'Team',
+         'Market value',
+         'Minutes played',
+         'Age',
+         'xG per 90',
+         'Assists per 90',
+         'Progressive runs per 90',
+         'Received passes per 90',
+         'Smart passes per 90',
+         'Key passes per 90']]
+
+#assign values to add back into df
+
+market_value = predict_df['Market value']
+player_name = predict_df['Player']
+team_current = predict_df['Team']
+minutes_played = predict_df['Minutes played']
+
+#drop metrics that are not ints or are not needed
+predict_df = predict_df.drop(['Market value', 'Player', 'Team', 'Minutes played'], axis=1)
+
+#add market value back into end of df
+
+predict_df['value'] = market_value
+
+
+### Create DF NP to create x and y train df's
+
+df_np = predict_df.to_numpy()
+
+#take the first N columns and assign them to x train and the last column (MARKET VALUE) and assign it to y train
+
+X_train, y_train = df_np[:, :7], df_np[:, -1]
+
+from sklearn.linear_model import LinearRegression
+
+sklearn_model = LinearRegression().fit(X_train, y_train)
+sklearn_y_predictions = sklearn_model.predict(X_train).astype(int)
+
+predictions_df = pd.DataFrame({
+                               'Age': predict_df['Age'],
+                               'Value': predict_df['value'],
+                               'Value Prediction':sklearn_y_predictions})
+
+#add back name and team columns
+predictions_df['Name'] = player_name
+predictions_df['Team'] = team_current
+predictions_df['Minutes played'] = minutes_played
+
+#reorder columns
+predictions_df = predictions_df[['Name', 'Team', 'Age', 'Value', 'Value Prediction', 'Minutes played']]
+predictions_df.reset_index(drop=True, inplace=True)
+
+#format using commas for value
+#predictions_df['Value'] = predictions_df.apply(lambda x: "{:,}".format(x['Value']), axis=1)
+predictions_df['Value Prediction'] = predictions_df.apply(lambda x: "{:,}".format(x['Value Prediction']), axis=1)
+
+st.write(predictions_df)
 
 
 #------------------------------------------------------------------------------------------RADAR----------------------------------------
@@ -907,74 +974,4 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
    
 
 radar(midfield_values, option, minutes, age, SizePlayer = 45)
-
-
-#-------------------------------------------------------------------Predict Value----------------------------------------
-
-st.title('PREDICT PLAYER VALUES 🔮💰')
-
-### Define values to use
-
-df = df[['Player',
-         'Team',
-         'Market value',
-         'Minutes played',
-         'Age',
-         'xG per 90',
-         'Shots per 90',
-         'Assists per 90',
-         'Touches in box per 90',
-         'Progressive runs per 90',
-         'Received passes per 90',
-         'Smart passes per 90',
-         'Key passes per 90']]
-
-#assign values to add back into df
-
-value = df['Market value']
-name = df['Player']
-team = df['Team']
-minutes = df['Minutes played']
-
-#drop metrics that are not ints or are not needed
-df = df.drop(['Market value', 'Player', 'Team', 'Minutes played'], axis=1)
-
-#add market value back into end of df
-
-df['value'] = value
-
-df.head()
-
-### Create DF NP to create x and y train df's
-
-df_np = df.to_numpy()
-
-#take the first N columns and assign them to x train and the last column (MARKET VALUE) and assign it to y train
-
-X_train, y_train = df_np[:, :9], df_np[:, -1]
-
-from sklearn.linear_model import LinearRegression
-
-sklearn_model = LinearRegression().fit(X_train, y_train)
-sklearn_y_predictions = sklearn_model.predict(X_train).astype(int)
-
-predictions_df = pd.DataFrame({
-                               'Age': df['Age'],
-                               'Value': df['value'],
-                               'Value Prediction':sklearn_y_predictions})
-
-#add back name and team columns
-predictions_df['Name'] = name
-predictions_df['Team'] = team
-predictions_df['Minutes played'] = minutes
-
-#reorder columns
-predictions_df = predictions_df[['Name', 'Team', 'Age', 'Value', 'Value Prediction', 'Minutes played']]
-predictions_df.reset_index(drop=True, inplace=True)
-
-#format using commas for value
-#predictions_df['Value'] = predictions_df.apply(lambda x: "{:,}".format(x['Value']), axis=1)
-predictions_df['Value Prediction'] = predictions_df.apply(lambda x: "{:,}".format(x['Value Prediction']), axis=1)
-
-st.write(predictions_df)
 
