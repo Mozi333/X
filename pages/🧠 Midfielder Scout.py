@@ -558,29 +558,50 @@ st.title('PREDICT PLAYER VALUES 🔮💰')
 
 predict_df = df[['Player',
          'Team',
+         'Position',
+         'Age',
          'Market value',
          'Minutes played',
-         'Age',
+         'Height',
+         'Weight',
          'xG per 90',
+         'Head goals',
+         'Shots on target, %',
          'Assists per 90',
+         'Crosses to goalie box per 90',
+         'Dribbles per 90',
+         'Successful dribbles, %',
          'Progressive runs per 90',
+         'Accelerations per 90',
          'Received passes per 90',
+         'Fouls suffered per 90',
+         'Back passes per 90',
+         'Second assists per 90',
+         'Third assists per 90',
          'Smart passes per 90',
-         'Key passes per 90']]
+         'Key passes per 90',
+         'Passes to final third per 90',
+         'Accurate passes to penalty area, %',
+         'Through passes per 90',
+         'Accurate through passes, %',
+         'Deep completions per 90',
+         'Corners per 90',
+         'Penalties taken']]
 
 #assign values to add back into df
+#select unique names to avoid conflicts with radar
+value_predict = predict_df['Market value']
+name_predict = predict_df['Player']
+team_predict = predict_df['Team']
+minutes_predict = predict_df['Minutes played']
+position_predict = predict_df['Position']
 
-market_value = predict_df['Market value']
-player_name = predict_df['Player']
-team_current = predict_df['Team']
-minutes_played = predict_df['Minutes played']
-
-#drop metrics that are not ints or are not needed
-predict_df = predict_df.drop(['Market value', 'Player', 'Team', 'Minutes played'], axis=1)
+predict_df = predict_df.drop(['Market value', 'Player', 'Team', 'Minutes played', 'Position'], axis=1)
 
 #add market value back into end of df
 
-predict_df['value'] = market_value
+predict_df['value'] = value_predict
+
 
 
 ### Create DF NP to create x and y train df's
@@ -589,7 +610,7 @@ df_np = predict_df.to_numpy()
 
 #take the first N columns and assign them to x train and the last column (MARKET VALUE) and assign it to y train
 
-X_train, y_train = df_np[:, :7], df_np[:, -1]
+X_train, y_train = df_np[:, :26], df_np[:, -1]
 
 from sklearn.linear_model import LinearRegression
 
@@ -597,14 +618,17 @@ sklearn_model = LinearRegression().fit(X_train, y_train)
 sklearn_y_predictions = sklearn_model.predict(X_train).astype(int)
 
 predictions_df = pd.DataFrame({
+                               'xG per 90': predict_df['xG per 90'],
+                               'Assists per 90': predict_df[ 'Assists per 90'],
+                               'Key passes per 90': predict_df['Key passes per 90'],
                                'Age': predict_df['Age'],
                                'Value': predict_df['value'],
                                'Value Prediction':sklearn_y_predictions})
 
 #add back name and team columns
-predictions_df['Name'] = player_name
-predictions_df['Team'] = team_current
-predictions_df['Minutes played'] = minutes_played
+predictions_df['Name'] = name_predict
+predictions_df['Minutes played'] = minutes_predict
+predictions_df['Team'] = team_predict
 
 #reorder columns
 predictions_df = predictions_df[['Name', 'Team', 'Age', 'Value', 'Value Prediction', 'Minutes played']]
