@@ -287,20 +287,13 @@ ratingfilter = st.multiselect('Metrics:', striker_values.columns.difference(['Pl
                                                                                                    'Sum_xGp90_and_Goalsx90', 
                                                                                                    'Deep completions per 90', 
                                                                                                    'Accurate passes to final third, %', 
-                                                                                                   'Accurate through passes, %', 
                                                                                                    'Successful defensive actions per 90', 
                                                                                                    'nonpenalty_xG/90', 
                                                                                                    'Non-penalty goals per 90', 
-                                                                                                   'Head goals per 90', 
-                                                                                                   'Accurate forward passes, %', 
-                                                                                                   'Accurate lateral passes, %', 
-                                                                                                   'Accurate long passes, %',
-                                                                                                   'Accurate progressive passes, %', 
+                                                                                                   'Head goals per 90',  
                                                                                                    'Accurate short / medium passes, %', 
                                                                                                    'Shots per 90', 
-                                                                                                   'xA per 90', 
-                                                                                                   'xG per 90',
-                                                                                                   'Smart passes per 90'])
+                                                                                                   'xA per 90'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -417,7 +410,7 @@ with tab1:
 
     #Sort By
 
-    shooting = df.sort_values('Shots', ascending=False)
+    shooting = df.sort_values('Shots per 90', ascending=False)
 
 
     #Choose columns to show
@@ -426,6 +419,7 @@ with tab1:
               'Team', 
               'Minutes played', 
               'Shots',
+              'Shots per 90',
               'Goal Ratio',
               'xG_Difference',
               'Non-penalty goals',
@@ -435,8 +429,7 @@ with tab1:
               'Position', 
               'Passport country', 
               'Age', 
-              '90s', 
-              'Shots per 90']])
+              '90s']])
 
 
     # print table
@@ -858,4 +851,5 @@ def radar(striker_values, name, minutes, age, SizePlayer):
 
 
 radar(striker_values, option, minutes, age, SizePlayer = 45)
+
 
