@@ -31,7 +31,7 @@ st.title('STRIKER SCOUT 🕵🏼‍♂️⚽️')
 
 def load_data():
     
-    data = (r'https://github.com/Mozi333/X/blob/main/delanterosamericas1.xlsx?raw=true')
+    data = (r'https://github.com/Mozi333/X/blob/main/sudamerica.xlsx?raw=true')
     file = requests.get(data)
     df = pd.read_excel(file.content)
     
@@ -54,6 +54,10 @@ def new_metrics(df):
     
     #goal ratio
     df['Goal Ratio'] = round(df['Shots'] / df['Non-penalty goals'], 2)
+    
+    #Shots minus penalties
+    
+    df['non_penalty_shots'] = df['Shots'] - df['Penalties taken']
     
     #Create new column 90 min played
     df['90s'] = df['Minutes played'] / 90
@@ -79,7 +83,10 @@ def new_metrics(df):
     
     
     #goal difference from xG p90
-    df["xG_Difference"] = round(df['Non-penalty goals per 90'] - df['nonpenalty_xG/90'], 2) 
+    df["xG_Difference"] = round(df['Non-penalty goals per 90'] - df['nonpenalty_xG/90'], 2)
+    
+    #xG per shot average
+    df['np_xG_shot_average'] =  df['nonpenalty_xG'] / df['non_penalty_shots']
 
     
 #Dividir Playeres por posicion 
@@ -250,7 +257,8 @@ striker_filter = ['Player',
                   'Assists', 
                   'Non-penalty goals per 90', 
                   'Head goals per 90',
-                 'Smart passes per 90']
+                 'Smart passes per 90',
+                 'np_xG_shot_average']
 
 #save DF with Striker filter columns
 
@@ -293,7 +301,8 @@ ratingfilter = st.multiselect('Metrics:', striker_values.columns.difference(['Pl
                                                                                                    'Head goals per 90',  
                                                                                                    'Accurate short / medium passes, %', 
                                                                                                    'Shots per 90', 
-                                                                                                   'xA per 90'])
+                                                                                                   'xA per 90',
+                                                                                                  'np_xG_shot_average'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -326,7 +335,8 @@ percentile = (percentile[['Player',
                           'Passport country', 
                           'Shots', 
                           'Non-penalty goals', 
-                          'xG per 90', 
+                          'xG per 90',
+                          'np_xG_shot_average',
                           'Non-penalty goals per 90', 
                           'Shots per 90', 
                           'Sum_xGp90_and_Goalsx90', 
@@ -360,6 +370,7 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Successful attacking actions per 90', 
                                                    'Shots on target, %', 
                                                    'Goal %', 
+                                                   'np_xG_shot_average',
                                                    'Offensive duels won, %',
                                                    'Progressive runs per 90', 
                                                    'Accelerations per 90', 
@@ -415,11 +426,13 @@ with tab1:
 
     #Choose columns to show
 
-    shooting = (shooting[['Player', 
+    shooting = (shooting[['Player',
+              'Age',
               'Team', 
               'Minutes played', 
               'Shots',
               'Shots per 90',
+              'np_xG_shot_average',
               'Goal Ratio',
               'xG_Difference',
               'Non-penalty goals',
@@ -428,14 +441,13 @@ with tab1:
               'nonpenalty_xG', 
               'Position', 
               'Passport country', 
-              'Age', 
               '90s']])
 
 
     # print table
 
     st.write(shooting.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
-
+    
 
 
 #------------------------------------------------------------------Headers------------------------- 
@@ -609,7 +621,8 @@ def radar(striker_values, name, minutes, age, SizePlayer):
         'Non-penalty goals per 90':'Goals \np90m',
         'Shots per 90':'Shots \np90m',
         'Accurate through passes, %':'% Accurate \nthrough \npasses',
-        'Head goals per 90':'Head \ngoals \np90m'}, inplace=True)
+        'Head goals per 90':'Head \ngoals \np90m',
+        'np_xG_shot_average':'xG per \nshot \naverage'}, inplace=True)
 
 
     #Reorder Values
@@ -621,6 +634,7 @@ def radar(striker_values, name, minutes, age, SizePlayer):
             'xA p90m',
             'Goal \nRatio',
             'Shots \np90m',
+            'xG per \nshot \naverage',
             'Head \ngoals \np90m',
             '% Offensive \nduels won',
             'Successful \nattacking \nactions \np90m',
@@ -659,8 +673,8 @@ def radar(striker_values, name, minutes, age, SizePlayer):
     #------Plot Radar
 
     # color for the slices and text
-    slice_colors = [Attack] * 12 + [Passes] * 3 + [Defense] * 1  # ataque - pases 
-    text_colors = ["#F2F2F2"] * 16
+    slice_colors = [Attack] * 13 + [Passes] * 3 + [Defense] * 1  # ataque - pases 
+    text_colors = ["#F2F2F2"] * 17
 
     # instantiate PyPizza class
     baker = PyPizza(
@@ -851,5 +865,4 @@ def radar(striker_values, name, minutes, age, SizePlayer):
 
 
 radar(striker_values, option, minutes, age, SizePlayer = 45)
-
 
