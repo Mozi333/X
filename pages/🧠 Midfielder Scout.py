@@ -55,6 +55,10 @@ def new_metrics(df):
     #goal ratio
     df['Goal Ratio'] = round(df['Shots'] / df['Non-penalty goals'], 2)
     
+    #Shots minus penalties
+    
+    df['non_penalty_shots'] = df['Shots'] - df['Penalties taken']
+    
     #Create new column 90 min played
     df['90s'] = df['Minutes played'] / 90
     df['90s'] = df['90s'].round()
@@ -79,7 +83,10 @@ def new_metrics(df):
     
     
     #goal difference from xG p90
-    df["xG_Difference"] = round(df['Non-penalty goals per 90'] - df['nonpenalty_xG/90'], 2) 
+    df["xG_Difference"] = round(df['Non-penalty goals per 90'] - df['nonpenalty_xG/90'], 2)
+    
+    #xG per shot average
+    df['np_xG_per_shot_average'] =  df['nonpenalty_xG'] / df['non_penalty_shots']
 
     
 #Dividir Playeres por posicion 
@@ -254,7 +261,8 @@ midfield_filter = ['Player',
                    'Non-penalty goals', 
                    'xG per 90', 'Shots', 
                    'Shots per 90',
-                   'Smart passes per 90',]
+                   'Smart passes per 90',
+                   'np_xG_per_shot_average']
 
 #save DF with new column
 
@@ -303,7 +311,8 @@ ratingfilter = st.multiselect('Metrics:', midfield_values.columns.difference(['P
                                                                                                   'Assists per 90', 
                                                                                                   'Non-penalty goals per 90', 
                                                                                                   'Shots per 90',
-                                                                                                  'Smart passes per 90'])
+                                                                                                  'Smart passes per 90',
+                                                                                                  'np_xG_per_shot_average'])
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
 
@@ -334,6 +343,7 @@ percentile = (percentile[['Player',
                           'Minutes played', 
                           'Passport country', 
                           'Shots', 
+                          'np_xG_per_shot_average',
                           'Non-penalty goals', 
                           'xG per 90', 
                           'Non-penalty goals per 90',
@@ -380,6 +390,7 @@ st.title('PERCENTILE RANKING')
 st.write(percentile.style.applymap(styler, subset=['Index', 
                                                    'Successful attacking actions per 90', 
                                                    'Shots on target, %', 
+                                                   'np_xG_per_shot_average',
                                                    'Goal %', 
                                                    'Offensive duels won, %', 
                                                    'Successful defensive actions per 90', 
@@ -447,6 +458,7 @@ with tab1:
               'Team', 
               'Minutes played', 
               'Shots',
+              'np_xG_per_shot_average',
               'Goal Ratio',
               'xG_Difference',
               'Non-penalty goals',
@@ -728,7 +740,6 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
     midfield_values.rename(columns={
         'xA per 90':'xA p90m',
         'Successful defensive actions per 90':'Successful \ndefensive \nactions \np90m',
-        'Deep completions per 90':'Deep \ncompletions \np90m',
         'Successful attacking actions per 90':'Successful \nattacking \nactions \np90m',
         'Accelerations per 90':'Accelerations \np90m',
         'Key passes per 90':'Key \npasses \np90m',
@@ -743,7 +754,8 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
         'Accurate through passes, %':'% Accurate \nthrough \npasses',
         'PAdj Interceptions':'PAdj \nInterceptions',
         'Received passes per 90':'Received \npasses \np90m',
-        'Defensive duels won, %':'% Defensive \nduels \nwon'}, inplace=True)
+        'Defensive duels won, %':'% Defensive \nduels \nwon',
+        'np_xG_per_shot_average':'xG per \nshot \navg'}, inplace=True)
 
 
     #Reorder Values
@@ -755,10 +767,10 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
             'xA p90m',
             'Goal \nRatio',
             'Shots \np90m',
+            'xG per \nshot \navg',
             '% Offensive \nduels won',
             'Successful \nattacking \nactions \np90m',
             'Progressive \nruns p90m',
-            'Deep \ncompletions \np90m',
             'Accelerations \np90m',
             '% Shots \non target',
             'Key \npasses \np90m',
