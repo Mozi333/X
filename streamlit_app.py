@@ -23,6 +23,16 @@ import openpyxl
 from pathlib import Path
 from mplsoccer import PyPizza, add_image, FontManager
 
+#-------- hide hamburger menu and made with streamlit text
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 #-----------------------------FUNCTIONS--------------------------------------------------------------
 
 st.title('SCOUTING APP 🕵🏼‍♂️')
