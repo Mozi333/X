@@ -24,6 +24,16 @@ from pathlib import Path
 from mplsoccer import PyPizza, add_image, FontManager
 import time
 
+#-------- hide hamburger menu and made with streamlit text
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 #-----------------------------FUNCTIONS--------------------------------------------------------------
 
 st.title('STRIKER SCOUT 🕵🏼‍♂️⚽️')
@@ -86,7 +96,7 @@ def new_metrics(df):
     df["xG_Difference"] = round(df['Non-penalty goals per 90'] - df['nonpenalty_xG/90'], 2)
     
     #xG per shot average
-    df['np_xG_shot_average'] =  df['nonpenalty_xG'] / df['non_penalty_shots']
+    df['np_xG_per_shot_average'] =  df['nonpenalty_xG'] / df['non_penalty_shots']
 
     
 #Dividir Playeres por posicion 
@@ -258,7 +268,7 @@ striker_filter = ['Player',
                   'Non-penalty goals per 90', 
                   'Head goals per 90',
                  'Smart passes per 90',
-                 'np_xG_shot_average']
+                 'np_xG_per_shot_average']
 
 #save DF with Striker filter columns
 
@@ -302,7 +312,7 @@ ratingfilter = st.multiselect('Metrics:', striker_values.columns.difference(['Pl
                                                                                                    'Accurate short / medium passes, %', 
                                                                                                    'Shots per 90', 
                                                                                                    'xA per 90',
-                                                                                                  'np_xG_shot_average'])
+                                                                                                  'np_xG_per_shot_average'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -336,7 +346,7 @@ percentile = (percentile[['Player',
                           'Shots', 
                           'Non-penalty goals', 
                           'xG per 90',
-                          'np_xG_shot_average',
+                          'np_xG_per_shot_average',
                           'Non-penalty goals per 90', 
                           'Shots per 90', 
                           'Sum_xGp90_and_Goalsx90', 
@@ -370,7 +380,7 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Successful attacking actions per 90', 
                                                    'Shots on target, %', 
                                                    'Goal %', 
-                                                   'np_xG_shot_average',
+                                                   'np_xG_per_shot_average',
                                                    'Offensive duels won, %',
                                                    'Progressive runs per 90', 
                                                    'Accelerations per 90', 
@@ -391,7 +401,7 @@ st.write(percentile.style.applymap(styler, subset=['Index',
 
 st.title('EFFECTIVENESS METRICS')
 
-tab1, tab2 = st.tabs(["Shooting", "Headers"])
+tab1, tab2, tab3 = st.tabs(["Shooting", "Headers", "Dribbling"])
 
 
 #------------------------------------------------------------------Shooting-------------------------
@@ -432,7 +442,7 @@ with tab1:
               'Minutes played', 
               'Shots',
               'Shots per 90',
-              'np_xG_shot_average',
+              'np_xG_per_shot_average',
               'Goal Ratio',
               'xG_Difference',
               'Non-penalty goals',
@@ -485,6 +495,41 @@ with tab2:
     pd.set_option('display.max_rows', Headers.shape[0]+1)
     st.write((Headers[['Player','Aerial duels per 90', '% of Aerial duels won', 'Head goals', 'Team', 'Age', 'Passport country', 
                        'Market value', 'Contract expires']]))
+    
+#------------------------------------------------------------------Dribble------------------------- 
+
+with tab3:
+    
+    st.subheader('DRIBBLE SUCCESS RATE')
+    dribbling = df.sort_values('Successful dribbles, %', ascending=False)
+
+    #dribble success flter
+    st.write('Filter players by dribbles per 90m:')
+    driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
+
+
+    dribbling = dribbling[~(dribbling['Dribbles per 90'] <= driblesx90)] 
+    dribbling.index = range(len(dribbling.index))
+    dribbling = dribbling.round()
+
+    #No decimals
+    dribbling['Successful dribbles, %'] = dribbling['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
+
+    #Add % sign
+    dribbling['Successful dribbles, %'] = dribbling['Successful dribbles, %'].astype(str) + '%'
+
+
+    #rename 
+
+
+    dribbling.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
+
+
+    dribbling = dribbling.reset_index(drop=True)
+    dribbling.index = dribbling.index + 1
+
+    pd.set_option('display.max_rows', dribbling.shape[0]+1)
+    st.write((dribbling[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
 
 #----------------------------------------------------------------------Bar chart ---------------------------- 
 
@@ -622,7 +667,7 @@ def radar(striker_values, name, minutes, age, SizePlayer):
         'Shots per 90':'Shots \np90m',
         'Accurate through passes, %':'% Accurate \nthrough \npasses',
         'Head goals per 90':'Head \ngoals \np90m',
-        'np_xG_shot_average':'xG per \nshot \naverage'}, inplace=True)
+        'np_xG_per_shot_average':'xG per \nshot \naverage'}, inplace=True)
 
 
     #Reorder Values
@@ -865,4 +910,3 @@ def radar(striker_values, name, minutes, age, SizePlayer):
 
 
 radar(striker_values, option, minutes, age, SizePlayer = 45)
-
