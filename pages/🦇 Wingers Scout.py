@@ -65,6 +65,10 @@ def new_metrics(df):
     #goal ratio
     df['Goal Ratio'] = round(df['Shots'] / df['Non-penalty goals'], 2)
     
+    #Shots minus penalties
+    
+    df['non_penalty_shots'] = df['Shots'] - df['Penalties taken']
+    
     #Create new column 90 min played
     df['90s'] = df['Minutes played'] / 90
     df['90s'] = df['90s'].round()
@@ -89,7 +93,10 @@ def new_metrics(df):
     
     
     #goal difference from xG p90
-    df["xG_Difference"] = round(df['Non-penalty goals per 90'] - df['nonpenalty_xG/90'], 2) 
+    df["xG_Difference"] = round(df['Non-penalty goals per 90'] - df['nonpenalty_xG/90'], 2)
+    
+    #xG per shot average
+    df['np_xG_per_shot_average'] =  df['nonpenalty_xG'] / df['non_penalty_shots']
 
     
 #Dividir Playeres por posicion 
@@ -383,7 +390,8 @@ winger_filter = ['Player',
                  'Progressive passes  Total',
                  'Free kicks  Total',
                  'Direct free kicks  Total',
-                 'Corners  Total']
+                 'Corners  Total',
+                 'np_xG_per_shot_average']
 
 #save DF with Striker filter columns
 
@@ -416,27 +424,20 @@ ratingfilter = st.multiselect('Metrics:', winger_values.columns.difference(['Pla
                                                                                                         'Offensive duels won, %', 
                                                                                                         'Progressive runs per 90', 
                                                                                                         'Accelerations per 90', 
-                                                                                                        'Sum_xAx90_and_Assistx90', 
                                                                                                         'Key passes per 90', 
-                                                                                                        'Sum_xGp90_and_Goalsx90', 
                                                                                                         'Deep completions per 90', 
                                                                                                         'Accurate passes to final third, %', 
-                                                                                                        'Accurate through passes, %', 
                                                                                                         'Successful defensive actions per 90',
                                                                                                         'nonpenalty_xG/90', 
                                                                                                         'Non-penalty goals per 90', 
-                                                                                                        'Accurate forward passes, %', 
-                                                                                                        'Accurate lateral passes, %', 
-                                                                                                        'Accurate long passes, %',
-                                                                                                        'Accurate progressive passes, %', 
-                                                                                                        'Accurate short / medium passes, %', 
+                                                                                                        'Accurate progressive passes, %',
                                                                                                         'Shots per 90', 
                                                                                                         'xA per 90', 
-                                                                                                        'xG per 90', 
                                                                                                         'PAdj Interceptions', 
                                                                                                         'Successful dribbles, %', 
                                                                                                         'Accurate crosses, %', 
-                                                                                                        'Defensive duels won, %'])
+                                                                                                        'Defensive duels won, %',
+                                                                                                        'np_xG_per_shot_average'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -470,6 +471,7 @@ percentile = (percentile[['Player',
                           'Shots', 
                           'Non-penalty goals', 
                           'xG per 90', 
+                          'np_xG_per_shot_average',
                           'Non-penalty goals per 90', 
                           'Shots per 90', 
                           'Sum_xGp90_and_Goalsx90', 
@@ -504,6 +506,7 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Successful attacking actions per 90', 
                                                    'Shots on target, %', 
                                                    'Goal %', 
+                                                   'np_xG_per_shot_average',
                                                    'Offensive duels won, %',
                                                    'Progressive runs per 90', 
                                                    'Accelerations per 90', 
@@ -564,6 +567,7 @@ with tab1:
               'Team', 
               'Minutes played', 
               'Shots',
+              'np_xG_per_shot_average',
               'Goal Ratio',
               'xG_Difference',
               'Non-penalty goals',
@@ -977,5 +981,4 @@ def radar(winger_values, name, minutes, age, SizePlayer):
 
 
 radar(winger_values, option, minutes, age, SizePlayer = 45)
-
 
