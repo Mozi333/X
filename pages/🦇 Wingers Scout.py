@@ -41,7 +41,7 @@ st.title('WINGER SCOUT 🕵🏼‍♂️🏃‍♂️')
 
 def load_data():
     
-    data = (r'https://github.com/Mozi333/X/blob/main/data/extremos-izquierdos-b-europa.xlsx?raw=true')
+    data = (r'https://github.com/Mozi333/X/blob/main/data/extremosamericas.xlsx?raw=true')
     file = requests.get(data)
     df = pd.read_excel(file.content)
     
@@ -193,7 +193,12 @@ st.sidebar.write('Filter players by minutes played:')
 minutes = st.sidebar.slider('Minutes:', 0, 3000, 380)
 
 
-df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK')]
+#Market Value
+st.sidebar.write('Filter players by market value:')
+market_value = st.sidebar.slider('Market Value:', 0, 100000000, 7000000)
+
+
+df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value)]
 df.Player.unique()
 
 #-------ASSIGNT VALUES FOR LATER USE------------------
