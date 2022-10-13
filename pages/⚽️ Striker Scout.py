@@ -193,7 +193,12 @@ st.sidebar.write('Filter players by minutes played:')
 minutes = st.sidebar.slider('Minutes:', 0, 3000, 380)
 
 
-df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK')]
+#Market Value
+st.sidebar.write('Filter players by market value:')
+market_value = st.sidebar.slider('Market Value:', 0, 100000000, 7000000)
+
+
+df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value)]
 df.Player.unique()
 
 #-------ASSIGNT VALUES FOR LATER USE------------------
