@@ -41,7 +41,7 @@ st.title('WINGER SCOUT 🕵🏼‍♂️🏃‍♂️')
 
 def load_data():
     
-    data = (r'https://github.com/Mozi333/X/blob/main/data/extremosamericas.xlsx?raw=true')
+    data = (r'https://github.com/Mozi333/X/blob/main/data/extremos-izquierdos-b-europa.xlsx?raw=true')
     file = requests.get(data)
     df = pd.read_excel(file.content)
     
