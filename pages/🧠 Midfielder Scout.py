@@ -24,6 +24,7 @@ from pathlib import Path
 from mplsoccer import PyPizza, add_image, FontManager
 import time
 
+
 #-------- hide hamburger menu and made with streamlit text
 hide_st_style = """
             <style>
@@ -192,8 +193,12 @@ age = st.sidebar.slider('Age:', 0, 45, 40)
 st.sidebar.write('Filter players by minutes played:')
 minutes = st.sidebar.slider('Minutes:', 0, 3000, 360)
 
+#Market Value
+st.sidebar.write('Filter players by market value:')
+market_value = st.sidebar.slider('Market Value:', 0, 100000000, 7000000)
 
-df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK')]
+
+df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value)]
 df.Player.unique()
 
 #-------ASSIGNT VALUES FOR LATER USE------------------
@@ -647,7 +652,7 @@ predictions_df.reset_index(drop=True, inplace=True)
 
 #format using commas for value
 #predictions_df['Value'] = predictions_df.apply(lambda x: "{:,}".format(x['Value']), axis=1)
-predictions_df['Value Prediction'] = predictions_df.apply(lambda x: "{:,}".format(x['Value Prediction']), axis=1)
+#predictions_df['Value Prediction'] = predictions_df.apply(lambda x: "{:,}".format(x['Value Prediction']), axis=1)
 
 st.write(predictions_df)
 
@@ -1009,6 +1014,7 @@ def radar(midfield_values, name, minutes, age, SizePlayer):
    
 
 radar(midfield_values, option, minutes, age, SizePlayer = 45)
+
 
 
 
