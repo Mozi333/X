@@ -154,6 +154,7 @@ df['Goal Ratio'].replace(np.inf, 0, inplace=True)
 
 
 
+
 #--------------------------------------------------------PRINT RAW DATA TABLE-----------------------
 
 # Create a text element and let the reader know the data is loading.
@@ -428,9 +429,8 @@ ratingfilter = st.multiselect('Metrics:', defender_values.columns.difference(['P
                               default=['Defensive duels won, %', 
                                        'Aerial duels won, %',
                                        'PAdj Interceptions',
-                                        'Accurate long passes, %',
-                                        'Accurate progressive passes, %',
-                                       'Accurate lateral passes, %'])
+                                       'Accurate lateral passes, %',
+                                       'Successful defensive actions per 90'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -461,6 +461,7 @@ percentile = (percentile[['Player',
                           'Age', 
                           'Height',
                           'Contract expires',
+                          'Market value',
                           'Position', 
                           'Matches played', 
                           'Minutes played', 
@@ -468,7 +469,8 @@ percentile = (percentile[['Player',
                           'Defensive duels won, %', 
                           'Aerial duels won, %',
                           'PAdj Interceptions',
-                          'Accurate lateral passes, %']]).copy()
+                          'Accurate lateral passes, %',
+                          'Successful defensive actions per 90']]).copy()
 
 #Sort By
 
@@ -483,6 +485,7 @@ st.title('PERCENTILE RANKING')
 # THIS COLORS THE COLUMNS CHOSEN
 st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Defensive duels won, %',
+                                                   'Successful defensive actions per 90',
                                                    'Aerial duels won, %',
                                                    'PAdj Interceptions',
                                                    'Accurate lateral passes, %']).set_precision(2))
