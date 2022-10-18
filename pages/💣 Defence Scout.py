@@ -190,8 +190,12 @@ minutes = st.sidebar.slider('Minutes:', 0, 3000, 380)
 st.sidebar.write('Filter players by market value:')
 market_value = st.sidebar.slider('Market Value:', 0, 100000000, 7000000)
 
+#Height
+st.sidebar.write('Filter players by height:')
+height_value = st.sidebar.slider('Height:', 170, 202, 185)
 
-df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value)]
+
+df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value) & (df['Height'] > height_value)]
 df.Player.unique()
 
 #-------ASSIGNT VALUES FOR LATER USE------------------
@@ -919,4 +923,3 @@ def radar(defender_values, name, minutes, age, SizePlayer):
 
 
 radar(defender_values, option, minutes, age, SizePlayer = 45)
-
