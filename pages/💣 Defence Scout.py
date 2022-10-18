@@ -694,7 +694,8 @@ def radar(defender_values, name, minutes, age, SizePlayer):
         'Accurate long passes, %':'% Accurate \nlong \npasses',
         'Smart passes per 90':'Smart \npasses \np90m',
         'Accurate through passes, %':'% Accurate \nthrough \npasses',
-        'Accurate progressive passes, %':'% Accurate \nprogressive \npasses'}, inplace=True)
+        'Accurate progressive passes, %':'% Accurate \nprogressive \npasses',
+        'Successful defensive actions per 90':'Successful \ndefensive \nactions \np90m'}, inplace=True)
 
 
     #Reorder Values
@@ -702,6 +703,7 @@ def radar(defender_values, name, minutes, age, SizePlayer):
     defender_values = defender_values[[
             'Player',
             '% Defensive \nduels \nwon',
+            'Successful \ndefensive \nactions \np90m',
             '% Aerial \nduels \nwon',
             'PAdj \nSliding \ntackles',
             'Shots \nblocked \np90m',
@@ -742,8 +744,8 @@ def radar(defender_values, name, minutes, age, SizePlayer):
 
 
     # color for the slices and text
-    slice_colors = [Defense] * 6 + [Passes] * 7 # defensa - pases
-    text_colors = ["#F2F2F2"] * 13
+    slice_colors = [Defense] * 7 + [Passes] * 7 # defensa - pases
+    text_colors = ["#F2F2F2"] * 14
 
     # instantiate PyPizza class
     baker = PyPizza(
@@ -923,3 +925,5 @@ def radar(defender_values, name, minutes, age, SizePlayer):
 
 
 radar(defender_values, option, minutes, age, SizePlayer = 45)
+
+
