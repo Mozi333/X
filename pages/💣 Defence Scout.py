@@ -199,32 +199,32 @@ df.Player.unique()
 #Assign Player name value for filter
 name = df['Player']
 
-# ------------------------------------------------USER INPUT METRICS--------------------
+# # ------------------------------------------------USER INPUT METRICS--------------------
 
 
-'## CHOOSE METRICS TO CREATE CUSTOM TABLE'
-cols = st.multiselect('Metrics:', df.columns, default=['Player', 
-                                                       'Team within selected timeframe', 
-                                                       'Age', 
-                                                       'Minutes played',  
-                                                       'Passport country', 
-                                                       'xG', 
-                                                       'Defensive duels per 90', 
-                                                       'Defensive duels won, %', 
-                                                       'Aerial duels per 90', 
-                                                       'Aerial duels won, %', 
-                                                       'Sliding tackles per 90', 
-                                                       'PAdj Sliding tackles', 
-                                                       'Shots blocked per 90',
-                                                       'Interceptions per 90',
-                                                       'PAdj Interceptions',
-                                                       'Fouls per 90',
-                                                       'Yellow cards per 90',
-                                                       'Red cards per 90'])
+# '## CHOOSE METRICS TO CREATE CUSTOM TABLE'
+# cols = st.multiselect('Metrics:', df.columns, default=['Player', 
+#                                                        'Team within selected timeframe', 
+#                                                        'Age', 
+#                                                        'Minutes played',  
+#                                                        'Passport country', 
+#                                                        'xG', 
+#                                                        'Defensive duels per 90', 
+#                                                        'Defensive duels won, %', 
+#                                                        'Aerial duels per 90', 
+#                                                        'Aerial duels won, %', 
+#                                                        'Sliding tackles per 90', 
+#                                                        'PAdj Sliding tackles', 
+#                                                        'Shots blocked per 90',
+#                                                        'Interceptions per 90',
+#                                                        'PAdj Interceptions',
+#                                                        'Fouls per 90',
+#                                                        'Yellow cards per 90',
+#                                                        'Red cards per 90'])
 
 
-# show dataframe with the selected columns
-st.write(df[cols])
+# # show dataframe with the selected columns
+# st.write(df[cols])
 
 #------------------------------------------------------------ FILTER METRICS ---------------------------------------
 
@@ -919,3 +919,4 @@ def radar(defender_values, name, minutes, age, SizePlayer):
 
 
 radar(defender_values, option, minutes, age, SizePlayer = 45)
+
