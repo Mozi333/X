@@ -229,7 +229,7 @@ st.write(df[cols])
 #------------------------------------------------------------ FILTER METRICS ---------------------------------------
 
 #Here must be all the values used in Index Rating and Radar
-winger_filter = ['Player',
+defender_filter = ['Player',
                  'Team',
                  'Team within selected timeframe',
                  'Position',
@@ -397,7 +397,7 @@ winger_filter = ['Player',
 
 #save DF with Striker filter columns
 
-defender_values = df[winger_filter].copy()
+defender_values = df[defender_filter].copy()
 
 #user picks which metrics to use for player rating
 
@@ -421,20 +421,12 @@ ratingfilter = st.multiselect('Metrics:', defender_values.columns.difference(['P
                                                                             'On loan', 
                                                                             'Assists', 
                                                                             'Main_position']), 
-                              default=['Defensive duels per 90', 
-                                                       'Defensive duels won, %', 
-                                                       'Aerial duels per 90', 
-                                                       'Aerial duels won, %', 
-                                                       'Sliding tackles per 90', 
-                                                       'PAdj Sliding tackles', 
-                                                       'Shots blocked per 90',
-                                                       'Interceptions per 90',
-                                                       'PAdj Interceptions',
-                                                       'Accurate forward passes, %',
-                                                        'Accurate short / medium passes, %',
-                                                        'Accurate long passes, %',
-                                                        'Smart passes per 90',
-                                                        'Accurate progressive passes, %'])
+                              default=['Defensive duels won, %', 
+                                       'Aerial duels won, %',
+                                       'PAdj Interceptions',
+                                        'Accurate long passes, %',
+                                        'Accurate progressive passes, %',
+                                       'Accurate lateral passes, %'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -458,22 +450,21 @@ percentile['Index'] = defender_values[ratingfilter].mean(axis=1)
 percentile[['Index']] = scaler.fit_transform(percentile[['Index']]).copy()
 
 #reorder columns
+#This marks what columns are shown in rating table
 percentile = (percentile[['Player', 
                           'Index', 
                           'Team within selected timeframe', 
-                          'Age', 'Position', 'Matches played', 
+                          'Age', 
+                          'Height',
+                          'Contract expires',
+                          'Position', 
+                          'Matches played', 
                           'Minutes played', 
                           'Passport country', 
-                          'Defensive duels per 90', 
-                           'Defensive duels won, %', 
-                           'Aerial duels per 90', 
-                           'Aerial duels won, %', 
-                           'Sliding tackles per 90', 
-                           'PAdj Sliding tackles', 
-                           'Shots blocked per 90',
-                           'Interceptions per 90',
-                           'PAdj Interceptions',
-                           'Fouls per 90']]).copy()
+                          'Defensive duels won, %', 
+                          'Aerial duels won, %',
+                          'PAdj Interceptions',
+                          'Accurate lateral passes, %']]).copy()
 
 #Sort By
 
@@ -485,116 +476,110 @@ percentile.index = percentile.index + 1
 
 st.title('PERCENTILE RANKING')
 
-# print table
-st.write(percentile.style.applymap(styler, subset=['Index', 
-                                                   'Defensive duels per 90', 
-                                                       'Defensive duels won, %', 
-                                                       'Aerial duels per 90', 
-                                                       'Aerial duels won, %', 
-                                                       'Sliding tackles per 90', 
-                                                       'PAdj Sliding tackles', 
-                                                       'Shots blocked per 90',
-                                                       'Interceptions per 90',
-                                                       'PAdj Interceptions',
-                                                       'Fouls per 90']).set_precision(2))
+# THIS COLORS THE COLUMNS CHOSEN
+st.write(percentile.style.applymap(styler, subset=['Index',
+                                                   'Defensive duels won, %',
+                                                   'Aerial duels won, %',
+                                                   'PAdj Interceptions',
+                                                   'Accurate lateral passes, %']).set_precision(2))
 
 
-#--------------------------------------- TABS ------------------------------
+# #--------------------------------------- TABS ------------------------------
 
-st.title('EFFECTIVENESS METRICS')
+# st.title('EFFECTIVENESS METRICS')
 
-tab1, tab2 = st.tabs(["Shooting", "Dribbling"])
+# tab1, tab2 = st.tabs(["Shooting", "Dribbling"])
 
 
-#------------------------------------------------------------------Shooting-------------------------
+# #------------------------------------------------------------------Shooting-------------------------
 
-with tab1:
+# with tab1:
 
-    st.subheader('SHOOTING SUCCESS RATE')
+#     st.subheader('SHOOTING SUCCESS RATE')
 
 
 
-    #result all 3 aspects *Style Index Colors
+#     #result all 3 aspects *Style Index Colors
 
 
 
-    def styler(v):
-        if v > 0.08:
-            return 'background-color:#E74C3C' #red
-        elif v > -0.08:
-             return 'background-color:#52CD34' #green
-        if v < -0.08:
-             return 'background-color:#E74C3C' #red
-        # elif v < .40:
-        #     return 'background-color:#E67E22' #orange
-        # else:
-        #     return 'background-color:#F7DC6F'  #yellow
+#     def styler(v):
+#         if v > 0.08:
+#             return 'background-color:#E74C3C' #red
+#         elif v > -0.08:
+#              return 'background-color:#52CD34' #green
+#         if v < -0.08:
+#              return 'background-color:#E74C3C' #red
+#         # elif v < .40:
+#         #     return 'background-color:#E67E22' #orange
+#         # else:
+#         #     return 'background-color:#F7DC6F'  #yellow
 
 
-    #Sort By
+#     #Sort By
 
-    shooting = df.sort_values('Shots', ascending=False)
-
-
-    #Choose columns to show
-
-    shooting = (shooting[['Player', 
-              'Team', 
-              'Minutes played', 
-              'Shots',
-              'Goal Ratio',
-              'xG_Difference',
-              'Non-penalty goals',
-              'nonpenalty_xG/90', 
-              'Non-penalty goals per 90',     
-              'nonpenalty_xG', 
-              'Position', 
-              'Passport country', 
-              'Age', 
-              '90s', 
-              'Shots per 90']])
+#     shooting = df.sort_values('Shots', ascending=False)
 
 
-    # print table
+#     #Choose columns to show
 
-    st.write(shooting.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
+#     shooting = (shooting[['Player', 
+#               'Team', 
+#               'Minutes played', 
+#               'Shots',
+#               'Goal Ratio',
+#               'xG_Difference',
+#               'Non-penalty goals',
+#               'nonpenalty_xG/90', 
+#               'Non-penalty goals per 90',     
+#               'nonpenalty_xG', 
+#               'Position', 
+#               'Passport country', 
+#               'Age', 
+#               '90s', 
+#               'Shots per 90']])
+
+
+#     # print table
+
+#     st.write(shooting.style.applymap(styler, subset=['xG_Difference']).set_precision(2))
 
 
 
-#------------------------------------------------------------------Dribble------------------------- 
+# #------------------------------------------------------------------Dribble------------------------- 
 
-with tab2:
+# with tab2:
     
-    st.subheader('DRIBBLE SUCCESS RATE')
-    dribbling = df.sort_values('Successful dribbles, %', ascending=False)
+#     st.subheader('DRIBBLE SUCCESS RATE')
+#     dribbling = df.sort_values('Successful dribbles, %', ascending=False)
 
-    #dribble success flter
-    st.write('Filter players by dribbles per 90m:')
-    driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
-
-
-    dribbling = dribbling[~(dribbling['Dribbles per 90'] <= driblesx90)] 
-    dribbling.index = range(len(dribbling.index))
-    dribbling = dribbling.round()
-
-    #No decimals
-    dribbling['Successful dribbles, %'] = dribbling['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
-
-    #Add % sign
-    dribbling['Successful dribbles, %'] = dribbling['Successful dribbles, %'].astype(str) + '%'
+#     #dribble success flter
+#     st.write('Filter players by dribbles per 90m:')
+#     driblesx90 = st.slider('Dribbles per 90m:',  0, 7, 3)
 
 
-    #rename 
+#     dribbling = dribbling[~(dribbling['Dribbles per 90'] <= driblesx90)] 
+#     dribbling.index = range(len(dribbling.index))
+#     dribbling = dribbling.round()
+
+#     #No decimals
+#     dribbling['Successful dribbles, %'] = dribbling['Successful dribbles, %'].astype(str).apply(lambda x: x.replace('.0',''))
+
+#     #Add % sign
+#     dribbling['Successful dribbles, %'] = dribbling['Successful dribbles, %'].astype(str) + '%'
 
 
-    dribbling.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
+#     #rename 
 
 
-    dribbling = dribbling.reset_index(drop=True)
-    dribbling.index = dribbling.index + 1
+#     dribbling.rename(columns={'Successful dribbles, %':'% of Successful dribbles'}, inplace=True)
 
-    pd.set_option('display.max_rows', dribbling.shape[0]+1)
-    st.write((dribbling[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
+
+#     dribbling = dribbling.reset_index(drop=True)
+#     dribbling.index = dribbling.index + 1
+
+#     pd.set_option('display.max_rows', dribbling.shape[0]+1)
+#     st.write((dribbling[['Player','Dribbles per 90', '% of Successful dribbles', 'Team', 'Age', 'Passport country', 'Market value', 'Contract expires']]))
 
 
 #---------------------------------------------------------------------RADAR----------------------------------------
