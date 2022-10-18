@@ -460,6 +460,7 @@ percentile = (percentile[['Player',
                           'Team within selected timeframe', 
                           'Age', 
                           'Height',
+                          'Weight',
                           'Contract expires',
                           'Market value',
                           'Position', 
@@ -928,5 +929,4 @@ def radar(defender_values, name, minutes, age, SizePlayer):
 
 
 radar(defender_values, option, minutes, age, SizePlayer = 45)
-
 
