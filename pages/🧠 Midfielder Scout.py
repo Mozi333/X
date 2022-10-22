@@ -1105,7 +1105,6 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
             '% Accurate \nthrough \npasses',
             'Received \npasses \np90m',
             'Successful \ndefensive \nactions \np90m',
-            '% Defensive \nduels \nwon',
             'PAdj \nInterceptions',
             '% Aerial \nduels \nwon']]
     
@@ -1135,8 +1134,8 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
     #------Plot Radar
 
     # color for the slices and text
-    slice_colors = [Attack] * 11 + [Passes] * 4 + [Defense] * 4  # ataque - pases 
-    text_colors = ["#F2F2F2"] * 19
+    slice_colors = [Attack] * 11 + [Passes] * 4 + [Defense] * 3  # ataque - pases 
+    text_colors = ["#F2F2F2"] * 18
 
     # instantiate PyPizza class
     baker = PyPizza(
