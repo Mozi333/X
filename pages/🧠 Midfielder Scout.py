@@ -179,8 +179,12 @@ minutes = st.sidebar.slider('Minutes:', 0, 3000, 360)
 st.sidebar.write('Filter players by market value:')
 market_value = st.sidebar.slider('Market Value:', 0, 100000000, 7000000)
 
+#Height
+st.sidebar.write('Filter players by height:')
+height_value = st.sidebar.slider('Height:', 0, 202, 170)
 
-df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value)]
+
+df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value) & (df['Height'] > height_value)]
 df.Player.unique()
 
 #-------ASSIGNT VALUES FOR LATER USE------------------
@@ -273,7 +277,7 @@ general_midfield_values = df[general_midfield_filter].copy()
 
 st.title('PERCENTILE RANKING')
 
-general_mid, attacking_mid, defensive_mid = st.tabs(["General Rating", "Attacking Rating", 'Defensive Rating'])
+general_mid, attacking_mid, defensive_mid, num6_mid = st.tabs(["General Rating", "Attacking Rating", 'Defensive Rating', 'Number 6 Rating'])
 
 
 ##---------------------GENERAL PERCENTILE RANKING----------------------------
@@ -350,7 +354,7 @@ with general_mid:
 
     #REORDER COLUMNS
     
-    #This only effects the final order of the table
+    #This only effects what gets printed on rating table
     percentile = (percentile[['Player', 
                               'Index', 
                               'Team within selected timeframe', 
@@ -495,12 +499,13 @@ with attacking_mid:
 
     #REORDER COLUMNS
     
-    #This only effects the final order of the table
+      #This only effects what gets printed on rating table
     percentile = (percentile[['Player', 
                               'Index', 
                               'Team within selected timeframe', 
                               'Age', 
                               'Contract expires',
+                              'Height',
                               'Matches played', 
                               'Minutes played', 
                               'Passport country', 
@@ -587,8 +592,7 @@ with defensive_mid:
                                                                                   'Assists', 
                                                                                   'Non-penalty goals', 
                                                                                   'Shots']), default=['Successful attacking actions per 90',
-                                                                                                      'Successful defensive actions per 90', 
-                                                                                                      'Defensive duels won, %',
+                                                                                                      'Successful defensive actions per 90',
                                                                                                       'PAdj Interceptions', 
                                                                                                       'Accurate progressive passes, %'])
 
@@ -618,13 +622,13 @@ with defensive_mid:
     percentile = (percentile[['Player', 
                               'Index', 
                               'Team within selected timeframe', 
-                              'Age', 
+                              'Age',
+                              'Height',
                               'Contract expires',
                               'Matches played', 
                               'Minutes played', 
                               'Passport country', 
                               'Successful defensive actions per 90',
-                              'Defensive duels won, %', 
                               'PAdj Interceptions',
                               'Accurate progressive passes, %']]).copy()
 
@@ -640,10 +644,96 @@ with defensive_mid:
 
     # THIS COLORS THE COLUMNS CHOSEN
     st.write(percentile.style.applymap(styler, subset=['Index',
-                                                       'Successful defensive actions per 90',
-                                                       'Defensive duels won, %', 
+                                                       'Successful defensive actions per 90', 
                                                        'PAdj Interceptions', 
                                                        'Accurate progressive passes, %']).set_precision(2))
+    
+
+    
+##---------------------Number 6 PERCENTILE RANKING----------------------------
+
+with num6_mid:
+
+
+    #user picks which metrics to use for player rating / Metrics that are chosen are turned into percentile ranking
+
+    '#### CHOOSE METRICS TO CREATE PLAYER RATING TABLE 🥇'
+    general_rating_filter = st.multiselect('Metrics:', general_midfield_values.columns.difference(['Player', 
+                                                                                  'Team', 
+                                                                                  'Team within selected timeframe', 
+                                                                                  'Non-penalty goals', 
+                                                                                  'Position', 
+                                                                                  'Age', 
+                                                                                  'Market value', 
+                                                                                  'Contract expires', 
+                                                                                  'Matches played', 
+                                                                                  'Minutes played', 
+                                                                                  'Birth country', 
+                                                                                  'Passport country', 
+                                                                                  'Foot', 
+                                                                                  'Height', 
+                                                                                  'Weight', 
+                                                                                  'On loan', 
+                                                                                  'Assists', 
+                                                                                  'Non-penalty goals', 
+                                                                                  'Shots']), default=['Successful attacking actions per 90',
+                                                                                                      'Successful defensive actions per 90',
+                                                                                                      'Accurate long passes, %',
+                                                                                                      'Aerial duels won, %'])
+
+    #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
+
+    #Normalize Min/Max Data  ************** Must pass cols as values to normalize  <------------------------------
+
+    scaler = MinMaxScaler()
+
+
+
+    general_midfield_values[general_rating_filter] = scaler.fit_transform(general_midfield_values[general_rating_filter]).copy()
+
+
+    percentile = (general_midfield_values).copy()
+
+
+    #create index column with average
+    percentile['Index'] = general_midfield_values[general_rating_filter].mean(axis=1)
+
+    #normalize index value 0 to 1
+    percentile[['Index']] = scaler.fit_transform(percentile[['Index']]).copy()
+
+    #REORDER COLUMNS
+    
+    #This only effects the final order of the table
+    percentile = (percentile[['Player', 
+                              'Index', 
+                              'Team within selected timeframe', 
+                              'Age',
+                              'Height',
+                              'Contract expires',
+                              'Matches played', 
+                              'Minutes played', 
+                              'Passport country', 
+                              'Successful defensive actions per 90',
+                              'Defensive duels won, %',
+                              'Accurate long passes, %',
+                              'Aerial duels won, %']]).copy()
+
+    #Sort By
+
+    percentile = percentile.sort_values('Index', ascending=False).reset_index(drop=True)
+    #start index on 1
+    percentile.index = percentile.index + 1
+
+    #--------Title
+
+    st.subheader('Number 6 Ranking')
+
+    # THIS COLORS THE COLUMNS CHOSEN
+    st.write(percentile.style.applymap(styler, subset=['Index',
+                                                       'Successful defensive actions per 90',
+                                                       'Defensive duels won, %',
+                                                       'Accurate long passes, %',
+                                                       'Aerial duels won, %']).set_precision(2))
 
 #--------------------------------------- TABS ------------------------------
 
@@ -963,6 +1053,11 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
     
     Marketvalue = general_midfield_values[general_midfield_values['Player']==option]
     Marketvalue = Marketvalue['Market value'].item()
+    
+    #Define Contract Info
+    
+    Contractexpires = general_midfield_values[general_midfield_values['Player']==option]
+    Contractexpires = Contractexpires['Contract expires'].item()
 
     #Rename Values
 
@@ -985,7 +1080,8 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
         'PAdj Interceptions':'PAdj \nInterceptions',
         'Received passes per 90':'Received \npasses \np90m',
         'Defensive duels won, %':'% Defensive \nduels \nwon',
-        'np_xG_per_shot_average':'xG per \nshot \navg'}, inplace=True)
+        'np_xG_per_shot_average':'xG per \nshot \navg',
+        'Aerial duels won, %':'% Aerial \nduels \nwon'}, inplace=True)
 
     #REORDER COLUMNS
     
@@ -1010,7 +1106,8 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
             'Received \npasses \np90m',
             'Successful \ndefensive \nactions \np90m',
             '% Defensive \nduels \nwon',
-            'PAdj \nInterceptions']]
+            'PAdj \nInterceptions',
+            '% Aerial \nduels \nwon']]
     
     #Create a parameter list
     
@@ -1038,8 +1135,8 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
     #------Plot Radar
 
     # color for the slices and text
-    slice_colors = [Attack] * 11 + [Passes] * 4 + [Defense] * 3  # ataque - pases 
-    text_colors = ["#F2F2F2"] * 18
+    slice_colors = [Attack] * 11 + [Passes] * 4 + [Defense] * 4  # ataque - pases 
+    text_colors = ["#F2F2F2"] * 19
 
     # instantiate PyPizza class
     baker = PyPizza(
@@ -1225,8 +1322,18 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
         0.90, 0.14,  "Market value:  €" + str(f"{Marketvalue:,}"), size=7,    
         fontproperties=bio_text.prop, color=Black
     )
+    
+    #Contract info
+    
+    fig.text(
+        
+        
+        0.90, 0.11,  "Contract exp: " + str(Contractexpires), size=7,    
+        fontproperties=bio_text.prop, color=Black
+    )
 
     st.pyplot(fig)
    
 
 radar(general_midfield_values, option, minutes, age, SizePlayer = 45)
+
