@@ -24,15 +24,6 @@ from pathlib import Path
 from mplsoccer import PyPizza, add_image, FontManager
 import time
 
-#-------- hide hamburger menu and made with streamlit text
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
 
 #-----------------------------FUNCTIONS--------------------------------------------------------------
 
@@ -193,7 +184,7 @@ market_value = st.sidebar.slider('Market Value:', 0, 100000000, 7000000)
 
 #Height
 st.sidebar.write('Filter players by height:')
-height_value = st.sidebar.slider('Height:', 170, 202, 185)
+height_value = st.sidebar.slider('Height:', 0, 202, 185)
 
 
 df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value) & (df['Height'] > height_value)]
@@ -430,7 +421,10 @@ ratingfilter = st.multiselect('Metrics:', defender_values.columns.difference(['P
                                        'Aerial duels won, %',
                                        'PAdj Interceptions',
                                        'Accurate lateral passes, %',
-                                       'Successful defensive actions per 90'])
+                                       'Successful defensive actions per 90',
+                                       'Dribbles per 90',
+                                       'Accurate passes, %',
+                                       'Accelerations per 90'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -471,7 +465,10 @@ percentile = (percentile[['Player',
                           'Aerial duels won, %',
                           'PAdj Interceptions',
                           'Accurate lateral passes, %',
-                          'Successful defensive actions per 90']]).copy()
+                          'Successful defensive actions per 90',
+                          'Dribbles per 90',
+                          'Accurate passes, %',
+                          'Accelerations per 90']]).copy()
 
 #Sort By
 
@@ -489,7 +486,10 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Successful defensive actions per 90',
                                                    'Aerial duels won, %',
                                                    'PAdj Interceptions',
-                                                   'Accurate lateral passes, %']).set_precision(2))
+                                                   'Accurate lateral passes, %',
+                                                   'Dribbles per 90',
+                                                   'Accurate passes, %',
+                                                   'Accelerations per 90']).set_precision(2))
 
 
 # #--------------------------------------- TABS ------------------------------
@@ -681,6 +681,11 @@ def radar(defender_values, name, minutes, age, SizePlayer):
     
     Marketvalue = defender_values[defender_values['Player']==option]
     Marketvalue = Marketvalue['Market value'].item()
+    
+    #Define Contract Info
+    
+    Contractexpires = defender_values[defender_values['Player']==option]
+    Contractexpires = Contractexpires['Contract expires'].item()
 
     #Rename Values
 
@@ -924,9 +929,19 @@ def radar(defender_values, name, minutes, age, SizePlayer):
         0.90, 0.14,  "Market value:  €" + str(f"{Marketvalue:,}"), size=7,    
         fontproperties=bio_text.prop, color=Black
     )
+    
+    #Contract info
+    
+    fig.text(
+        
+        
+        0.90, 0.11,  "Contract exp: " + str(Contractexpires), size=7,    
+        fontproperties=bio_text.prop, color=Black
+    )
+    
+    
 
     st.pyplot(fig)
 
 
 radar(defender_values, option, minutes, age, SizePlayer = 45)
-
