@@ -27,16 +27,6 @@ import time
 from new_metrics import *
 
 
-#-------- hide hamburger menu and made with streamlit text
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
-
 #-----------------------------FUNCTIONS--------------------------------------------------------------
 
 st.title('MIDFIELDER SCOUT 🕵🏼‍♂️🧠')
@@ -1328,11 +1318,11 @@ bio_text = FontManager(("https://github.com/google/fonts/blob/main/ofl/lato/Lato
 #------ Player name filter
 
 #name has a list with all the player names
-option = st.selectbox('Choose Player name', (name))
+option = st.selectbox('Choose Player Name', (name))
 
 st.write('You chose:', option)
 
-fullname = st.text_input('Type name to print on radar', option)
+fullname = st.text_input('Type player name to print on radar', option)
 st.write('The full name of the player is:', fullname)
 
 
@@ -1670,5 +1660,3 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
    
 
 radar(general_midfield_values, option, minutes, age, SizePlayer = 45)
-
-
