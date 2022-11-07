@@ -1671,3 +1671,4 @@ def radar(general_midfield_values, name, minutes, age, SizePlayer):
 
 radar(general_midfield_values, option, minutes, age, SizePlayer = 45)
 
+
