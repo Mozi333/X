@@ -1,5 +1,7 @@
 import streamlit as st
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide",
+                  page_title="Defender Scout",
+                  page_icon='💣')
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -34,7 +36,7 @@ st.title('💣 DEFENCE SCOUT')
 
 def load_data():
     
-    data = (r'https://github.com/Mozi333/X/blob/main/data/defenders-b-europa.xlsx?raw=true')
+    data = (r'https://github.com/Mozi333/X/blob/main/data/all-CB-b-europe-2022.xlsx?raw=true')
     file = requests.get(data)
     df = pd.read_excel(file.content)
     
@@ -153,11 +155,19 @@ market_value = st.sidebar.slider('Market Value:', 0, 100000000, 7000000)
 
 #Height
 st.sidebar.write('Filter players by height:')
-height_value = st.sidebar.slider('Height:', 0, 202, 185)
+height_value = st.sidebar.slider('Height:', 0, 202, 0)
+
+#dribbles
+st.sidebar.write('Filter players by dribbling:')
+Dribbles_per_90 = st.sidebar.slider('Dribbles per 90:', 0.0, 10.0, 0.0)
+Successful_dribbles_pct = st.sidebar.slider('% Successful dribbles:', 0.0, 100.0, 0.0)
 
 
-df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value) & (df['Height'] > height_value)]
-df.Player.unique()
+df = df.loc[(df['Minutes played'] > minutes) & (df['Age'] < age) & (df['Position'] != 'GK') & (df['Market value'] < market_value) & (df['Height'] > height_value) 
+            & (df['Dribbles per 90'] > Dribbles_per_90) & (df['Successful dribbles, %'] > Successful_dribbles_pct)]
+
+df.Player.unique() 
+
 
 #-------ASSIGNT VALUES FOR LATER USE------------------
 
@@ -394,7 +404,9 @@ ratingfilter = st.multiselect('Metrics:', defender_values.columns.difference(['P
                                        'Successful defensive actions per 90',
                                        'Dribbles per 90',
                                        'Accurate passes, %',
-                                       'Accelerations per 90'])
+                                       'Accelerations per 90',
+                                       'PAdj Interceptions',
+                                       'Accurate progressive passes, %'])
 
 
 #--------------------------------------------- percentile RANKING INDEX-------------------------------------------
@@ -417,6 +429,17 @@ percentile['Index'] = defender_values[ratingfilter].mean(axis=1)
 #turn index into 0-1 percentile
 percentile[['Index']] = scaler.fit_transform(percentile[['Index']]).copy()
 
+#Make filters based on percentile ranking
+st.sidebar.write('Filter players by metrics percentile:')
+Defensive_Duels_Won = st.sidebar.slider('Defensice Duels:', 0.0, 1.0, 0.0)
+Accurate_progressive_passes = st.sidebar.slider('Accurate progressive passes:', 0.0, 1.0, 0.0)
+PAdj_Interceptions = st.sidebar.slider('PAdj Interceptions:', 0.0, 1.0, 0.0)
+Smart_passes_per_90 = st.sidebar.slider('Smart passes per 90:', 0.0, 1.0, 0.0)
+
+
+percentile = percentile.loc[(percentile['Defensive duels won, %'] > Defensive_Duels_Won) & (percentile['Accurate progressive passes, %'] > Accurate_progressive_passes) & (percentile['PAdj Interceptions'] > PAdj_Interceptions) & (percentile['Smart passes per 90'] > Smart_passes_per_90)] 
+
+
 #reorder columns
 #This marks what columns are shown in rating table
 percentile = (percentile[['Player', 
@@ -438,7 +461,9 @@ percentile = (percentile[['Player',
                           'Successful defensive actions per 90',
                           'Dribbles per 90',
                           'Accurate passes, %',
-                          'Accelerations per 90']]).copy()
+                          'Accelerations per 90',
+                          'Accurate progressive passes, %',
+                          'Smart passes per 90']]).copy()
 
 #Sort By
 
@@ -459,7 +484,9 @@ st.write(percentile.style.applymap(styler, subset=['Index',
                                                    'Accurate lateral passes, %',
                                                    'Dribbles per 90',
                                                    'Accurate passes, %',
-                                                   'Accelerations per 90']).set_precision(2))
+                                                   'Accelerations per 90',
+                                                   'Accurate progressive passes, %',
+                                                   'Smart passes per 90']).set_precision(2))
 
 
 # #--------------------------------------- TABS ------------------------------
@@ -665,16 +692,12 @@ def radar(defender_values, name, minutes, age, SizePlayer):
        'Aerial duels won, %':'% Aerial \nduels \nwon', 
        'PAdj Sliding tackles':'PAdj \nSliding \ntackles', 
        'Shots blocked per 90':'Shots \nblocked \np90m',
-       'Interceptions per 90':'Interceptions \np90m',
        'PAdj Interceptions':'PAdj \nInterceptions',
         'Accurate forward passes, %':'% Accurate \nforward \npasses',
         'Accurate lateral passes, %':'% Accurate \nlateral \npasses',
-        'Accurate short / medium passes, %':'% Accurate \nshort/medium \npasses',
         'Accurate long passes, %':'% Accurate \nlong \npasses',
         'Smart passes per 90':'Smart \npasses \np90m',
-        'Accurate through passes, %':'% Accurate \nthrough \npasses',
-        'Accurate progressive passes, %':'% Accurate \nprogressive \npasses',
-        'Successful defensive actions per 90':'Successful \ndefensive \nactions \np90m'}, inplace=True)
+        'Accurate progressive passes, %':'% Accurate \nprogressive \npasses'}, inplace=True)
 
 
     #Reorder Values
@@ -682,18 +705,14 @@ def radar(defender_values, name, minutes, age, SizePlayer):
     defender_values = defender_values[[
             'Player',
             '% Defensive \nduels \nwon',
-            'Successful \ndefensive \nactions \np90m',
             '% Aerial \nduels \nwon',
             'PAdj \nSliding \ntackles',
             'Shots \nblocked \np90m',
-            'Interceptions \np90m',
             'PAdj \nInterceptions',
             '% Accurate \nforward \npasses',
             '% Accurate \nlateral \npasses',
-            '% Accurate \nshort/medium \npasses',
             '% Accurate \nlong \npasses',
             'Smart \npasses \np90m',
-            '% Accurate \nthrough \npasses',
             '% Accurate \nprogressive \npasses']]
     
     #Create a parameter list
@@ -723,8 +742,8 @@ def radar(defender_values, name, minutes, age, SizePlayer):
 
 
     # color for the slices and text
-    slice_colors = [Defense] * 7 + [Passes] * 7 # defensa - pases
-    text_colors = ["#F2F2F2"] * 14
+    slice_colors = [Defense] * 5 + [Passes] * 5 # defensa - pases
+    text_colors = ["#F2F2F2"] * 10
 
     # instantiate PyPizza class
     baker = PyPizza(
@@ -916,3 +935,124 @@ def radar(defender_values, name, minutes, age, SizePlayer):
 
 radar(defender_values, option, minutes, age, SizePlayer = 45)
 
+#-------------------------------------------------------------------Predict Value----------------------------------------
+
+st.title('PREDICT PLAYER VALUES 🔮💰')
+
+### Define values to use
+
+predict_df = df[['Player',
+         'Team',
+         'Position',
+         'Age',
+ 'Market value',
+ 'Minutes played',
+ 'Height',
+ 'Weight',
+ 'Defensive duels won, %',
+ 'Aerial duels won, %',
+ 'PAdj Sliding tackles',
+ 'Shots blocked per 90',
+ 'PAdj Interceptions',
+ 'Fouls per 90',
+ 'Yellow cards per 90',
+ 'Red cards per 90',
+ 'xG per 90',
+ 'Head goals per 90',
+ 'Shots per 90',
+ 'Shots on target, %',
+ 'Goal conversion, %',
+ 'Assists per 90',
+ 'Accurate crosses, %',
+ 'Accurate crosses from left flank, %',
+ 'Accurate crosses from right flank, %',
+ 'Crosses to goalie box per 90',
+ 'Dribbles per 90',
+ 'Successful dribbles, %',
+ 'Offensive duels won, %',
+ 'Touches in box per 90',
+ 'Progressive runs per 90',
+ 'Accelerations per 90',
+ 'Received long passes per 90',
+ 'Fouls suffered per 90',
+ 'Accurate forward passes, %',
+ 'Back passes per 90',
+ 'Accurate back passes, %',
+ 'Lateral passes per 90',
+ 'Accurate lateral passes, %',
+ 'Long passes per 90',
+ 'Accurate long passes, %',
+ 'Average pass length, m',
+ 'Average long pass length, m',
+ 'xA per 90',
+ 'Second assists per 90',
+ 'Third assists per 90',
+ 'Smart passes per 90',
+ 'Accurate smart passes, %',
+ 'Key passes per 90',
+ 'Accurate passes to final third, %',
+ 'Accurate passes to penalty area, %',
+ 'Through passes per 90',
+ 'Accurate through passes, %',
+ 'Deep completions per 90',
+ 'Deep completed crosses per 90',
+ 'Progressive passes per 90',
+ 'Accurate progressive passes, %',
+ 'Free kicks per 90',
+ 'Direct free kicks per 90',
+ 'Direct free kicks on target, %',
+ 'Corners per 90',
+ 'Penalties taken',
+ 'Penalty conversion, %']]
+
+#assign values to add back into df
+#select unique names to avoid conflicts with radar
+value_predict = predict_df['Market value']
+name_predict = predict_df['Player']
+team_predict = predict_df['Team']
+minutes_predict = predict_df['Minutes played']
+position_predict = predict_df['Position']
+
+predict_df = predict_df.drop(['Market value', 'Player', 'Team', 'Minutes played', 'Position'], axis=1)
+
+#add market value back into end of df
+
+predict_df['value'] = value_predict
+
+
+
+### Create DF NP to create x and y train df's
+
+df_np = predict_df.to_numpy()
+
+#take the first N columns and assign them to x train and the last column (MARKET VALUE) and assign it to y train
+
+X_train, y_train = df_np[:, :56], df_np[:, -1]
+
+from sklearn.linear_model import LinearRegression
+
+sklearn_model = LinearRegression().fit(X_train, y_train)
+sklearn_y_predictions = sklearn_model.predict(X_train).astype(int)
+
+predictions_df = pd.DataFrame({
+                               'xG per 90': predict_df['xG per 90'],
+                               'Assists per 90': predict_df[ 'Assists per 90'],
+                               'Key passes per 90': predict_df['Key passes per 90'],
+                               'Age': predict_df['Age'],
+                               'Value': predict_df['value'],
+                               'Value Prediction':sklearn_y_predictions})
+
+#add back name and team columns
+predictions_df['Name'] = name_predict
+predictions_df['Minutes played'] = minutes_predict
+predictions_df['Team'] = team_predict
+
+#reorder columns
+predictions_df = predictions_df[['Name', 'Team', 'Age', 'Value', 'Value Prediction', 'Minutes played']]
+predictions_df.reset_index(drop=True, inplace=True)
+
+#format using commas for value
+#predictions_df['Value'] = predictions_df.apply(lambda x: "{:,}".format(x['Value']), axis=1)
+#predictions_df['Value Prediction'] = predictions_df.apply(lambda x: "{:,}".format(x['Value Prediction']), axis=1)
+
+st.write(predictions_df)
